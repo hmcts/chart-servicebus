@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 location: uksouth
 serviceplan: basic
 resourceGroup: someGroup
 setup:
   queues:
    - name: frenchy
+=======
+# should probably remove the default resource group?
+resourceGroup: bulk-scan-aks
+location: uksouth
+servicePlan: basic
+namespace: cnp
+queueName: envelopes
+>>>>>>> Use  azure-servicebus-namespace service

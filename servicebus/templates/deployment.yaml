@@ -5,18 +5,32 @@
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
+<<<<<<< HEAD
   name: servicebus-namespace-{{ .Release.Name }}
   labels:
     {{- ( include "labels" . ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-namespace
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
+=======
+  name: {{ .Release.Name }}-servicebus-instance
+  namespace: {{ .Values.namespace }}
+  labels: 
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  clusterServiceClassExternalName: azure-servicebus-namespace
+  clusterServicePlanExternalName: {{ .Values.servicePlan }}
+>>>>>>> Use  azure-servicebus-namespace service
   parameters:
 #    this does not seem to work at the moment.
 #    tags:
 #      app.kubernetes.io/name: {{ .Release.Name }}
 #      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     location: {{ .Values.location }}
+<<<<<<< HEAD
     alias: servicebus-namespace-alias-{{ .Release.Name }}
     resourceGroup: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
 ---
@@ -52,18 +66,66 @@ spec:
     maxQueueSize: {{ default $queue.maxQueueSize  1024 }}	
     messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
     lockDuration: {{ default $queue.lockDuration "PT30S"}}
+=======
+    resourceGroup: {{ required "A resource group ( values.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
+    alias: {{ .Release.Name }}-servicebus-namespace
+>>>>>>> Use  azure-servicebus-namespace service
 ---
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
+<<<<<<< HEAD
   name: servicebus-queue-binding-{{ $base.Release.Name }}-{{ $queue.name }}
+=======
+  name: {{ .Release.Name }}-servicebus-binding
+  namespace: {{ .Values.namespace }}
+>>>>>>> Use  azure-servicebus-namespace service
   labels:
     {{- (include "labels" $base) | indent 4 }}
 spec:
   instanceRef:
     name: servicebus-queue-{{ $base.Release.Name }}-{{ $queue.name }}
   # map across the connectionString
+<<<<<<< HEAD
   secretName: servicebus-secret-queue-{{ $base.Release.Name }}-{{ $queue.name }}
     {{- end -}}
   {{- end -}}
 {{- end -}}
+=======
+  secretName: servicebus-{{ .Release.Name }}-secret
+---
+#
+# Service Catalog Servicebus queue
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceInstance
+metadata:
+  name: {{ .Release.Name }}-servicebus-queue-instance
+  namespace: {{ .Values.namespace }}
+  labels: 
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  clusterServiceClassExternalName: azure-servicebus-queue
+  #clusterServicePlanExternalName: {{ .Values.servicePlan }}
+  parameters:
+    parentAlias: {{ .Release.Name }}-servicebus-namespace
+    queueName: {{ .Values.queueName }}
+---
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: {{ .Release.Name }}-servicebus-queue-binding
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name  }}
+spec:
+  instanceRef:
+    name: {{ .Release.Name }}-servicebus-queue-instance
+  # map across the connectionString
+  secretName: servicebus-{{ .Release.Name }}-queue-secret
+>>>>>>> Use  azure-servicebus-namespace service
