@@ -9,12 +9,32 @@ We will take small PRs and small features to this chart but more complicated nee
 ## Example configuration
 
 ```yaml
-resourcegroup:: "your applciation resource group"
+resourceGroup: "your applciation resource group"
 setup:
   queues:
-   - yourQueue
+   - name: yourQueue
 ```
 **NOTE**: the queue is required configuratiuon for the service bus to provision the queue required for the application.
+
+## Using it in your helm chart.
+To get the connectionString you need to include a secret that is only available once the queue is provisioned.
+This means that there is secret make during the provisioning.
+To add the conection string for the queue you have added then use this to the values.template.yaml:
+In the **Java** chart section under the secrets: section.
+```yaml
+servicebus:
+   resourceGroup: yyyy
+   queues:
+   - name: yourQueue
+java:
+  secrets:
+    SB_CONN_STRING:
+      secretRef: servicebus-queue-${SERVICE_NAME}-yourQueue
+      key: connectionString
+```
+Where:
+ - **yourQueue** is your queue name.
+ - **yyyy** is your application resource group.
 
 ## Configuration
 
@@ -24,6 +44,7 @@ The following table lists the configurable parameters of the Java chart and thei
 | -------------- | ----------- | ------- |
 | location       | location of the PaaS instance of the servicebus to use | `uksouth`|
 | serviceplan    | service plan of the PaaS instance to use | `basic`|
+| resourceGroup  | This is the resource group required for the azure deployment |  ** REQUIRED ** |
 | setup          | this is a yaml object containing the configuration of your servicebus currently only member is .queues[] which is the list of queues needed| ** REQUIRED ** |
 
 ## Development and Testing
