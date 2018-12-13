@@ -1,2 +1,6 @@
 location: uksouth
 serviceplan: basic
+resourceGroup: someGroup
+setup:
+  queues:
+   - name: frenchy

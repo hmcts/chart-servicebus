@@ -6,11 +6,8 @@ apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: servicebus-namespace-{{ .Release.Name }}
-  labels: 
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  labels:
+    {{- ( include "labels" . ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-namespace
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
@@ -28,33 +25,29 @@ kind: ServiceBinding
 metadata:
   name: servicebus-namespace-binding-{{ .Release.Name }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name  }}
+    {{- ( include "labels" . ) | indent 4 }}
 spec:
   instanceRef:
     name: servicebus-namespace-{{ .Release.Name }}
   # map across the connectionString
   secretName: servicebus-secret-namespace-{{ .Release.Name }}
-
-
+   
 {{- if .Values.setup -}}
   {{- if .Values.setup.queues -}}
-    {{- $releaseName:=.Release.Name -}} 
+    {{- $base := . -}} 
     {{- range $queue := .Values.setup.queues -}}
 ---
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
-  name: servicebus-queue-{{ $releaseName }-{{ $queue.name }}
-  labels: 
-    app.kubernetes.io/name: {{ $releaseName }}
+  name: servicebus-queue-{{ $base.Release.Name }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
+  labels:
+    {{- ( include "labels" $base ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-queue
   clusterServicePlanExternalName: queue
   parameters:
-    parentAlias: {{ $releaseName }}-alias
+    parentAlias: {{ $base.Release.Name }}-alias
     queueName: {{ $queue.name }}
     maxQueueSize: {{ default $queue.maxQueueSize  1024 }}	
     messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
@@ -63,15 +56,14 @@ spec:
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
-  name: servicebus-queue-binding-{{ $releaseName }}-{{ $queue.name }}
+  name: servicebus-queue-binding-{{ $base.Release.Name }}-{{ $queue.name }}
   labels:
-    app.kubernetes.io/name: {{ $releaseName  }}
-    app.kubernetes.io/instance: {{ $releaseName  }}
+    {{- (include "labels" $base) | indent 4 }}
 spec:
   instanceRef:
-    name: servicebus-queue-{{ $releaseName }}-{{ $queue.name }}
+    name: servicebus-queue-{{ $base.Release.Name }}-{{ $queue.name }}
   # map across the connectionString
-  secretName: servicebus-secret-queue-{{ $releaseName }}-{{ $queue.name }}
+  secretName: servicebus-secret-queue-{{ $base.Release.Name }}-{{ $queue.name }}
     {{- end -}}
   {{- end -}}
 {{- end -}}
