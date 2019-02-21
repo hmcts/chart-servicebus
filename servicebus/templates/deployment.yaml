@@ -12,13 +12,13 @@ spec:
   clusterServiceClassExternalName: azure-servicebus-namespace
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
   parameters:
-#    this does not seem to work at the moment.
-#    tags:
-#      app.kubernetes.io/name: {{ .Release.Name }}
-#      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     location: {{ .Values.location }}
     alias: servicebus-namespace-alias-{{ .Release.Name }}
     resourceGroup: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
+    tags:
+      app.kubernetes.io_name: {{ .Release.Name }}
+      helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      "Team Name": {{ required "A team name (.Values.teamName) is required" .Values.teamName }}
 ---
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
@@ -47,7 +47,7 @@ spec:
   clusterServiceClassExternalName: azure-servicebus-queue
   clusterServicePlanExternalName: queue
   parameters:
-    parentAlias: {{ $base.Release.Name }}-alias
+    parentAlias: servicebus-namespace-alias-{{ $base.Release.Name }}
     queueName: {{ $queue.name }}
     maxQueueSize: {{ default $queue.maxQueueSize  1024 }}	
     messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
