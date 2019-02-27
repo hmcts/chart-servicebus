@@ -1,6 +1,7 @@
 location: uksouth
 serviceplan: basic
-resourceGroup: someGroup
+teamName: 
+resourceGroup:
 setup:
   queues:
-   - name: frenchy
+   - name: chartqueue
