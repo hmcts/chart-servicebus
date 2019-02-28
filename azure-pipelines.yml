@@ -25,7 +25,7 @@ jobs:
       chartReleaseName: chart-servicebus-ci-test
       chartNamespace: chart-tests
       helmDeleteWait: "120"
-      helmInstallWait: "120"
+      helmInstallWait: "180"
 
 - job: Release
   # Make sure we have a tag to run this job
