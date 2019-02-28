@@ -22,7 +22,7 @@ jobs:
   - template: steps/charts/validate.yaml@cnp-library
     parameters :
       chartName: servicebus
-      chartReleaseName: chart-servicebus-ci-test
+      chartReleaseName: chart-servicebus-test-ci
       chartNamespace: chart-tests
       helmDeleteWait: "600"
       helmInstallWait: "300"
