@@ -31,9 +31,23 @@ servicebus:
 java:
   secrets:
     SB_CONN_STRING:
-      secretRef: servicebus-queue-${SERVICE_NAME}-yourQueue
+      secretRef: servicebus-queue-{{ .Release.Name }}-yourQueue
       key: connectionString
 ```
+If using releaseNameOverride, secretRef will be updated as in below
+```yaml
+releaseNameOverride: example-release-name
+servicebus:
+    resourceGroup: yyyy
+    setup:
+      queues:
+      - name: yourQueue
+java:
+  secrets:
+    SB_CONN_STRING:
+      secretRef: servicebus-queue-example-release-name-yourQueue
+```
+
 Where:
  - **yourQueue** is your queue name.
  - **yyyy** is your application resource group.
@@ -44,6 +58,7 @@ The following table lists the configurable parameters of the Java chart and thei
 
 | Parameter      | Type | Description | Default |
 | -------------- | ---- | ----------- | ------- |
+| `releaseNameOverride`          | Will override the resource name - It supports templating, example:`releaseNameOverride: {{ .Release.Name }}-my-custom-name`      | `Release.Name-Chart.Name`     |
 | `location` | string |location of the PaaS instance of the servicebus to use | `uksouth` |
 | `serviceplan` | string | service plan of the PaaS instance to use | `basic`|
 | `resourceGroup` | string | This is the resource group required for the azure deployment |  **Required** |
