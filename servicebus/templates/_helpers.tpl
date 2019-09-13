@@ -12,6 +12,6 @@ app.kubernetes.io/instance: {{ .Release.Name -}}
 {{- if .Values.releaseNameOverride -}}
 {{- tpl .Values.releaseNameOverride $ | trunc 53 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 53 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name | trunc 53 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
