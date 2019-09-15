@@ -5,7 +5,7 @@
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
-  name: servicebus-namespace-{{ template "hmcts.releaseName" . }}
+  name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
   labels:
     {{- ( include "labels" . ) | indent 4 }}
 spec:
@@ -13,24 +13,24 @@ spec:
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
   parameters:
     location: {{ .Values.location }}
-    alias: servicebus-namespace-alias-{{ template "hmcts.releaseName" . }}
+    alias: servicebus-namespace-alias-{{ template "hmcts.servicebus.releaseName" . }}
     resourceGroup: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
     tags:
-      app.kubernetes.io_name: {{ template "hmcts.releaseName" . }}
+      app.kubernetes.io_name: {{ template "hmcts.servicebus.releaseName" . }}
       helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
       "Team Name": {{ required "A team name (.Values.teamName) is required" .Values.teamName }}
 ---
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
-  name: servicebus-namespace-binding-{{ template "hmcts.releaseName" . }}
+  name: servicebus-namespace-binding-{{ template "hmcts.servicebus.releaseName" . }}
   labels:
     {{- ( include "labels" . ) | indent 4 }}
 spec:
   instanceRef:
-    name: servicebus-namespace-{{ template "hmcts.releaseName" . }}
+    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
   # map across the connectionString
-  secretName: servicebus-secret-namespace-{{ template "hmcts.releaseName" . }}
+  secretName: servicebus-secret-namespace-{{ template "hmcts.servicebus.releaseName" . }}
 
 {{- if .Values.setup -}}
   {{- if .Values.setup.queues -}}
@@ -40,14 +40,14 @@ spec:
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
-  name: servicebus-queue-{{ template "hmcts.releaseName" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
+  name: servicebus-queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
   labels:
     {{- ( include "labels" $base ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-queue
   clusterServicePlanExternalName: queue
   parameters:
-    parentAlias: servicebus-namespace-alias-{{ template "hmcts.releaseName" $base }}
+    parentAlias: servicebus-namespace-alias-{{ template "hmcts.servicebus.releaseName" $base }}
     queueName: {{ $queue.name }}
     maxQueueSize: {{ default $queue.maxQueueSize  1024 }}
     messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
@@ -56,14 +56,14 @@ spec:
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
-  name: servicebus-queue-binding-{{ template "hmcts.releaseName" $base }}-{{ $queue.name }}
+  name: servicebus-queue-binding-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
   labels:
     {{- (include "labels" $base) | indent 4 }}
 spec:
   instanceRef:
-    name: servicebus-queue-{{ template "hmcts.releaseName" $base }}-{{ $queue.name }}
+    name: servicebus-queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
   # map across the connectionString
-  secretName: servicebus-secret-queue-{{ template "hmcts.releaseName" $base }}-{{ $queue.name }}
+  secretName: servicebus-secret-queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
     {{- end -}}
   {{- end -}}
 {{- end -}}

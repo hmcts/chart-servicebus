@@ -8,7 +8,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/instance: {{ .Release.Name -}}
 {{- end -}}
 
-{{- define "hmcts.releaseName" -}}
+{{- define "hmcts.servicebus.releaseName" -}}
 {{- if .Values.releaseNameOverride -}}
 {{- tpl .Values.releaseNameOverride $ | trunc 53 | trimSuffix "-" -}}
 {{- else -}}
