@@ -7,7 +7,7 @@ kind: ServiceInstance
 metadata:
   name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
   labels:
-    {{- ( include hmcts.servicebus.labels . ) | indent 4 }}
+    {{- ( include "labels" . ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-namespace
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
@@ -25,7 +25,7 @@ kind: ServiceBinding
 metadata:
   name: servicebus-namespace-binding-{{ template "hmcts.servicebus.releaseName" . }}
   labels:
-    {{- ( include hmcts.servicebus.labels . ) | indent 4 }}
+    {{- ( include "labels" . ) | indent 4 }}
 spec:
   instanceRef:
     name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
@@ -42,7 +42,7 @@ kind: ServiceInstance
 metadata:
   name: servicebus-queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
   labels:
-    {{- ( include hmcts.servicebus.labels $base ) | indent 4 }}
+    {{- ( include "labels" $base ) | indent 4 }}
 spec:
   clusterServiceClassExternalName: azure-servicebus-queue
   clusterServicePlanExternalName: queue
@@ -58,7 +58,7 @@ kind: ServiceBinding
 metadata:
   name: servicebus-queue-binding-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
   labels:
-    {{- (include hmcts.servicebus.labels $base) | indent 4 }}
+    {{- (include "labels" $base) | indent 4 }}
 spec:
   instanceRef:
     name: servicebus-queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
