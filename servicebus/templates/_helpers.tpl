@@ -1,11 +1,11 @@
 {{/*
 All the common lables needed for the lables sections of the definitions.
 */}}
-{{- define "labels" }}
-app.kubernetes.io/name: {{ .Release.Name }}
+{{- define "hmcts.servicebus.labels" }}
+app.kubernetes.io/name: {{ template "hmcts.servicebus.releaseName" . }}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/instance: {{ .Release.Name -}}
+app.kubernetes.io/instance: {{ template "hmcts.servicebus.releaseName" . }}
 {{- end -}}
 
 {{- define "hmcts.servicebus.releaseName" -}}
