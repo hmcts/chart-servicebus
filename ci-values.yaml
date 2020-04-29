@@ -1,8 +1,12 @@
 resourceGroup: chart-servicebus-test
-teamName: "Software Engineering" 
+teamName: "Software Engineering"
 location: uksouth
-serviceplan: basic
+serviceplan: standard
 setup:
   queues:
    - name: chartqueue3
    - name: chartqueue4
+  topics:
+   - name: charttopic1
+     subscriptionNeeded: yes
+   - name: charttopic2

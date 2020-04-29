@@ -13,17 +13,17 @@ setup:
 	az aks get-credentials --resource-group ${AKS_RESOURCE_GROUP} --name ${AKS_CLUSTER}
 
 clean:
-	-helm delete --purge ${RELEASE}
+	-helm delete ${RELEASE} -n ${NAMESPACE}
 	-kubectl delete pod ${TEST} -n ${NAMESPACE}
 
 lint:
 	helm lint ${CHART}
 
 deploy:
-	helm install ${CHART} --name ${RELEASE} --namespace ${NAMESPACE} -f ci-values.yaml --wait --timeout 60
+	helm install ${RELEASE} ${CHART} --namespace ${NAMESPACE} -f ci-values.yaml --wait --timeout 60s
 
 test:
-	helm test ${RELEASE}
+	helm test ${RELEASE} -n ${NAMESPACE}
 
 all: setup clean lint deploy test
 
