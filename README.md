@@ -13,6 +13,8 @@ resourceGroup: "your application resource group"
 setup:
   queues:
    - name: yourQueue
+  topics:
+   - name: myTopic
 ```
 **NOTE**: the queue and the resource group are required for the service bus to provision the queues and instance required for the application.
 
@@ -32,6 +34,9 @@ java:
   secrets:
     SB_CONN_STRING:
       secretRef: servicebus-queue-{{ .Release.Name }}-yourQueue
+      key: connectionString
+    SB_TOPIC_CONN_STRING:
+      secretRef: servicebus-topic-{{ .Release.Name }}-yourQueue
       key: connectionString
 ```
 If using releaseNameOverride, secretRef will be updated as in below
@@ -67,10 +72,13 @@ The following table lists the configurable parameters of the Java chart and thei
 | `setup.queues.maxQueueSize` | `int` | The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. | 1024|
 | `setup.queues.messageTimeToLive` | `string` | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. For example, `PT276H13M14S` sets the message to expire in 11 day 12 hour 13 minute 14 seconds. |  "PT336H" |
 | `setup.queues.lockDuration` | `string` | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The lock duration time window can range from 5 seconds to 5 minutes. For example, `PT2M30S` sets the lock duration time to 2 minutes 30 seconds. | "PT30S"|
-
+| `setup.topics.name` | `string` | The name of the topic. | **Required**|
+| `setup.topics.maxTopicSize` | `int` | The maximum size of the queue in megabytes, which is the size of memory allocated for the topic. | 1024|
+| `setup.topics.messageTimeToLive` | `string` | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. For example, `PT276H13M14S` sets the message to expire in 11 day 12 hour 13 minute 14 seconds. |  "PT336H" |
+| `setup.topics.subscriptionNeeded` | `string` | Specifies whether to create a subscription in the topic. Valid values are ["yes", "no"]. If set to "yes", a subscription having random name will be created in the topic; otherwise, it leaves everything unchanged. You may set this field to "yes" for message consumer, and set this field to "no" for message producer. |  "no" |
 
 ## Setup Objects
-Currently we only support the `queue` setup but this might easily be extended to the `subscription` and `topics` when we need.
+We support both `queue` and `topic` setup with optional `subscription` if needed.
  The queue object definition is:
 ```yaml
 setup:
@@ -79,6 +87,12 @@ setup:
     maxQueueSize:  1024 	
     messageTimeToLive: "PT336H" 
     lockDuration: "PT30S"
+  topics:
+  - name: yourTopic
+    maxQueueSize:  1024 	
+    messageTimeToLive: "PT336H" 
+    subscriptionNeeded: "yes"
+
 ```
 
 ## Development and Testing
