@@ -1,6 +1,7 @@
+language: None
 location: uksouth
 serviceplan: basic
-teamName: 
+teamName:
 resourceGroup:
 setup:
   queues:
