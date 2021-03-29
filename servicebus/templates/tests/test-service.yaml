@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "hmcts.releasename.v1" . }}-test-configmap
+  name: {{ template "hmcts.releasename.v2" . }}-test-configmap
 data:
   entrypoint.sh: |-
     #!/bin/sh
@@ -37,7 +37,7 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ template "hmcts.releasename.v1" . }}-test-service"
+  name: "{{ template "hmcts.releasename.v2" . }}-test-service"
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -45,25 +45,25 @@ spec:
     - name: configmap-volume
       configMap:
         defaultMode: 0755
-        name: {{ template "hmcts.releasename.v1" . }}-test-configmap
+        name: {{ template "hmcts.releasename.v2" . }}-test-configmap
   containers:
-    - name: {{ template "hmcts.releasename.v1" . }}-test-service
+    - name: {{ template "hmcts.releasename.v2" . }}-test-service
       image: alpine:3.8
       volumeMounts:
         - name: configmap-volume
           mountPath: /entrypoint
       env:
         - name: SERVICE_NAME
-          value: {{ template "hmcts.releasename.v1" . }}
+          value: {{ template "hmcts.releasename.v2" . }}
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:
-              name: servicebus-secret-queue-{{ template "hmcts.releasename.v1" . }}-{{ $queueName }}
+              name: servicebus-secret-queue-{{ template "hmcts.releasename.v2" . }}-{{ $queueName }}
               key: namespaceName
         - name: ROOT_KEY
           valueFrom:
             secretKeyRef:
-              name: servicebus-secret-namespace-{{ template "hmcts.releasename.v1" . }}
+              name: servicebus-secret-namespace-{{ template "hmcts.releasename.v2" . }}
               key: primaryKey
       command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
