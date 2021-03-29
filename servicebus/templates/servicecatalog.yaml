@@ -12,17 +12,17 @@ spec:
   clusterServicePlanExternalName: {{ .Values.serviceplan }}
   parameters:
     location: {{ .Values.location }}
-    alias: servicebus-namespace-alias-{{ template "hmcts.releasename.v1" . }}
+    alias: servicebus-namespace-alias-{{ template "hmcts.releasename.v2" . }}
     resourceGroup: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
     tags:
-      app.kubernetes.io_name: {{ template "hmcts.releasename.v1" . }}
+      app.kubernetes.io_name: {{ template "hmcts.releasename.v2" . }}
       helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
       "Team Name": {{ required "A team name (.Values.teamName) is required" .Values.teamName }}
 ---
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
-  name: servicebus-namespace-binding-{{ template "hmcts.releasename.v1" . }}
+  name: servicebus-namespace-binding-{{ template "hmcts.releasename.v2" . }}
   {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
 spec:
   instanceRef:
