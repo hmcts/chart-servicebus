@@ -33,10 +33,10 @@ servicebus:
 java:
   secrets:
     SB_CONN_STRING:
-      secretRef: servicebus-queue-{{ .Release.Name }}-yourQueue
+      secretRef: servicebus-secret-queue-{{ .Release.Name }}-servicebus-yourQueue
       key: connectionString
     SB_TOPIC_CONN_STRING:
-      secretRef: servicebus-topic-{{ .Release.Name }}-yourQueue
+      secretRef: servicebus-secret-topic-{{ .Release.Name }}-servicebus-yourTopic
       key: connectionString
 ```
 If using releaseNameOverride, secretRef will be updated as in below
@@ -50,7 +50,7 @@ servicebus:
 java:
   secrets:
     SB_CONN_STRING:
-      secretRef: servicebus-queue-example-release-name-yourQueue
+      secretRef: servicebus-secret-queue-example-release-name-servicebus-yourQueue
 ```
 
 Where:
