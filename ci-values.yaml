@@ -1,6 +1,9 @@
 resourceGroup: chart-servicebus-test
 teamName: "Software Engineering"
 applicationName: "core"
+builtFrom: "https://github.com/hmcts/chart-servicebus"
+businessArea: "CFT"
+environment: "development"
 location: uksouth
 serviceplan: standard
 setup:

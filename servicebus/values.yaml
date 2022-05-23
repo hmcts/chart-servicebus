@@ -2,6 +2,9 @@ location: uksouth
 serviceplan: basic
 teamName:
 applicationName:
+builtFrom:
+businessArea:
+environment:
 resourceGroup:
 setup:
   queues:
