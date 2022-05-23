@@ -1,5 +1,6 @@
 resourceGroup: chart-servicebus-test
 teamName: "Software Engineering"
+applicationName: "core"
 location: uksouth
 serviceplan: standard
 setup:

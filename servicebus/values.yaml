@@ -1,6 +1,7 @@
 location: uksouth
 serviceplan: basic
 teamName:
+applicationName:
 resourceGroup:
 setup:
   queues:
