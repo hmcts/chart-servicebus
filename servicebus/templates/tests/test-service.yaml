@@ -33,7 +33,7 @@ data:
 
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
- {{- $queueName := (index .Values.setup.queues 0).name -}}
+{{- $queueName := (index .Values.setup.queues 0).name -}}
 apiVersion: v1
 kind: Pod
 metadata:
