@@ -2,7 +2,7 @@
 #
 # Service Catalog Servicebus namespace
 # https://github.com/Azure/open-service-broker-azure/blob/master/docs/modules/servicebus.md
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
@@ -23,7 +23,7 @@ spec:
       "businessArea": {{ required "Business Area name (.Values.businessArea) is required" .Values.businessArea }}
       "environment": {{ required "Environment name (.Values.environment) is required" .Values.environment }}
 ---
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
   name: servicebus-namespace-binding-{{ template "hmcts.releasename.v2" . }}
@@ -40,7 +40,7 @@ spec:
     {{- $base := . -}}
     {{- range $queue := .Values.setup.queues }}
 ---
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: servicebus-queue-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
@@ -55,7 +55,7 @@ spec:
     messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
     lockDuration: {{ default $queue.lockDuration "PT30S"}}
 ---
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
   name: servicebus-queue-binding-{{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
@@ -72,7 +72,7 @@ spec:
   {{- $base := . -}}
   {{- range $topic := .Values.setup.topics }}
 ---
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: servicebus-topic-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
@@ -86,7 +86,7 @@ spec:
     maxTopicSize: {{ default $topic.maxTopicSize  1024 }}
     messageTimeToLive: {{ default $topic.messageTimeToLive "PT336H" }}
 ---
-apiVersion: servicecatalog.k8s.io/v1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceBinding
 metadata:
   name: servicebus-topic-binding-{{ template "hmcts.releasename.v2" $base }}-{{ $topic.name }}
