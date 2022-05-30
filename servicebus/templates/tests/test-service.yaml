@@ -33,6 +33,7 @@ data:
 
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
+ {{- $queueName := (index .Values.setup.queues 0).name -}}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -57,7 +58,7 @@ spec:
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:
-              name: servicebus-secret-queue-{{ template "hmcts.releasename.v2" . }}-{{- $queueName := (index .Values.setup.queues 0).name -}}
+              name: servicebus-secret-queue-{{ template "hmcts.releasename.v2" . }}-{{ $queueName }}
               key: namespaceName
         - name: ROOT_KEY
           valueFrom:
@@ -66,4 +67,3 @@ spec:
               key: primaryKey
       command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
-
