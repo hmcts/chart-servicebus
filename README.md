@@ -76,6 +76,11 @@ The following table lists the configurable parameters of the Java chart and thei
 | `setup.topics.maxTopicSize` | `int` | The maximum size of the queue in megabytes, which is the size of memory allocated for the topic. | 1024|
 | `setup.topics.messageTimeToLive` | `string` | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. For example, `PT276H13M14S` sets the message to expire in 11 day 12 hour 13 minute 14 seconds. |  "PT336H" |
 | `setup.topics.subscriptionNeeded` | `string` | Specifies whether to create a subscription in the topic. Valid values are ["yes", "no"]. If set to "yes", a subscription having random name will be created in the topic; otherwise, it leaves everything unchanged. You may set this field to "yes" for message consumer, and set this field to "no" for message producer. |  "no" |
+| `teamName` | string | team name used to create related Azure tag |  **Required** |
+| `applicationName` | string | application name used to create necessary Azure tag |  **Required** |
+| `builtFrom` | string | built from used to create necessary Azure tag |  **Required** |
+| `businessArea` | string | business area used to create necessary Azure tag |  **Required** |
+| `environment` | string | environment used to create necessary Azure tag |  **Required** |
 
 ## Setup Objects
 We support both `queue` and `topic` setup with optional `subscription` if needed.
