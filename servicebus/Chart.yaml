@@ -19,5 +19,5 @@ keywords:
 
 dependencies: # A list of the chart requirements (optional)
   - name: library
-    version: 0.5.7
-    repository: '@hmctspublic'
+    version: 1.0.7
+    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
