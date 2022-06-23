@@ -1,9 +1,10 @@
 resourceGroup: chart-servicebus-test
-teamName: "Software Engineering"
-applicationName: "core"
-builtFrom: "https://github.com/hmcts/chart-servicebus"
-businessArea: "CFT"
-environment: "development"
+tags:
+  teamName: ""
+  applicationName: ""
+  builtFrom: ""
+  businessArea: ""
+  environment: ""
 location: uksouth
 serviceplan: standard
 setup:
@@ -14,3 +15,11 @@ setup:
    - name: charttopic1
      subscriptionNeeded: yes
    - name: charttopic2
+
+global:
+  tags:
+    teamName: "Software Engineering"
+    applicationName: "core"
+    builtFrom: "https://github.com/hmcts/chart-servicebus"
+    businessArea: "CFT"
+    environment: "development"
