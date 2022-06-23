@@ -1,9 +1,9 @@
+{{- $globals := .Values.global | default dict -}}
+{{- $tags := $globals.tags | default dict -}}
 ---
 #
 # Service Catalog Servicebus namespace
 # https://github.com/Azure/open-service-broker-azure/blob/master/docs/modules/servicebus.md
-{{- $globals := .Values.global | default dict -}}
-{{- $tags := $globals.tags | default dict -}}
 apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
