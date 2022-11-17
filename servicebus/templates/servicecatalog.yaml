@@ -2,21 +2,20 @@
 {{- $tags := $globals.tags | default dict -}}
 ---
 #
-# Service Catalog Servicebus namespace
-# https://github.com/Azure/open-service-broker-azure/blob/master/docs/modules/servicebus.md
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceInstance
+# ASO Servicebus examples
+# https://github.com/Azure/azure-service-operator/tree/main/v2/samples/servicebus
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: Namespace
 metadata:
   name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
   {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
 spec:
-  clusterServiceClassExternalName: azure-servicebus-namespace
-  clusterServicePlanExternalName: {{ .Values.serviceplan }}
-  parameters:
-    location: {{ .Values.location }}
-    alias: servicebus-namespace-alias-{{ template "hmcts.releasename.v2" . }}
-    resourceGroup: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
-    tags:
+  location: {{ .Values.location }}
+  owner:
+    name: {{ required "A resource group ( .Values.servicebus.resourceGroup ) is required service bus creation" .Values.resourceGroup | quote }}
+  sku:
+    name: Standard
+  tags: 
       app.kubernetes.io_name: {{ template "hmcts.releasename.v2" . }}
       helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
       "Team Name": {{ required "A team name (.Values.tags.teamName) is required" (.Values.tags.teamName | default $tags.teamName) }}
@@ -24,17 +23,7 @@ spec:
       "builtFrom": {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}
       "businessArea": {{ required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) }}
       "environment": {{ required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) }}
----
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceBinding
-metadata:
-  name: servicebus-namespace-binding-{{ template "hmcts.releasename.v2" . }}
-  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
-spec:
-  instanceRef:
-    name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
-  # map across the connectionString
-  secretName: servicebus-secret-namespace-{{ template "hmcts.releasename.v2" . }}
+  zoneRedundant: false
 
 {{- if .Values.setup -}}
 
@@ -42,66 +31,47 @@ spec:
     {{- $base := . -}}
     {{- range $queue := .Values.setup.queues }}
 ---
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceInstance
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesQueue
 metadata:
   name: servicebus-queue-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
-  clusterServiceClassExternalName: azure-servicebus-queue
-  clusterServicePlanExternalName: queue
-  parameters:
-    parentAlias: servicebus-namespace-alias-{{ template "hmcts.releasename.v2" $base }}
-    queueName: {{ $queue.name }}
-    maxQueueSize: {{ default $queue.maxQueueSize  1024 }}
-    messageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
-    lockDuration: {{ default $queue.lockDuration "PT30S"}}
----
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceBinding
-metadata:
-  name: servicebus-queue-binding-{{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
-  {{- (include "hmcts.labels.v2" $base) | indent 2 }}
-spec:
-  instanceRef:
-    name: servicebus-queue-{{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
-  # map across the connectionString
-  secretName: servicebus-secret-queue-{{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
+  azureName: {{ $queue.name }}
+  defaultMessageTimeToLive: {{ default $queue.messageTimeToLive "PT336H" }}
+  lockDuration: {{ default $queue.lockDuration "PT30S"}}
+  maxSizeInMegabytes: {{ default $queue.maxQueueSize  1024 }}
+  owner:
+    name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
     {{- end -}}
   {{- end -}}
 
   {{- if .Values.setup.topics -}}
-  {{- $base := . -}}
-  {{- range $topic := .Values.setup.topics }}
+    {{- $base := . -}}
+    {{- range $topic := .Values.setup.topics }}
 ---
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceInstance
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesTopic
 metadata:
   name: servicebus-topic-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
-  clusterServiceClassExternalName: azure-servicebus-topic
-  clusterServicePlanExternalName: topic
-  parameters:
-    parentAlias: servicebus-namespace-alias-{{ template "hmcts.releasename.v2" $base }}
-    topicName: {{ $topic.name }}
-    maxTopicSize: {{ default $topic.maxTopicSize  1024 }}
-    messageTimeToLive: {{ default $topic.messageTimeToLive "PT336H" }}
+  azureName: {{ $topic.name }}
+  defaultMessageTimeToLive: {{ default $topic.messageTimeToLive "PT336H" }}
+  maxSizeInMegabytes: {{ default $topic.maxTopicSize  1024 }}
+  owner:
+    name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
+      {{- if $topic.subscriptionNeeded }}
 ---
-apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceBinding
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesTopicsSubscription
 metadata:
-  name: servicebus-topic-binding-{{ template "hmcts.releasename.v2" $base }}-{{ $topic.name }}
-  {{- (include "hmcts.labels.v2" $base) | indent 2 }}
+  name: servicebus-topic-subscription-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
 spec:
-  instanceRef:
-    name: servicebus-topic-{{ template "hmcts.releasename.v2" $base }}-{{ $topic.name }}
-  # map across the connectionString
-  secretName: servicebus-secret-topic-{{ template "hmcts.releasename.v2" $base }}-{{ $topic.name }}
-  parameters:
-    subscriptionNeeded: "{{ if $topic.subscriptionNeeded }}yes{{ else }}no{{ end}}"
-    {{- end -}}
+  owner:
+    name: servicebus-topic-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
+        {{- end -}}
+      {{- end -}}
   {{- end -}}
-
 {{- end -}}
 
