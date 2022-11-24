@@ -42,7 +42,7 @@ spec:
   lockDuration: {{ default $queue.lockDuration "PT30S"}}
   maxSizeInMegabytes: {{ default $queue.maxQueueSize  1024 }}
   owner:
-    name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
+    name: servicebus-namespace-{{ template "hmcts.releasename.v2" $base }}
     {{- end -}}
   {{- end -}}
 
@@ -60,7 +60,7 @@ spec:
   defaultMessageTimeToLive: {{ default $topic.messageTimeToLive "PT336H" }}
   maxSizeInMegabytes: {{ default $topic.maxTopicSize  1024 }}
   owner:
-    name: servicebus-namespace-{{ template "hmcts.releasename.v2" . }}
+    name: servicebus-namespace-{{ template "hmcts.releasename.v2" $base }}
       {{- if $topic.subscriptionNeeded }}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
