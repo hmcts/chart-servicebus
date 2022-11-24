@@ -1,0 +1,87 @@
+├── Namespace: Resource
+│   ├── Spec: 
+│   │   ├── AzureName: string
+│   │   ├── Identity: 
+│   │   │   ├── PropertyBag: genruntime.PropertyBag
+│   │   │   └── Type: *string
+│   │   ├── Location: *string
+│   │   ├── OperatorSpec: 
+│   │   │   ├── PropertyBag: genruntime.PropertyBag
+│   │   │   └── Secrets: 
+│   │   │       ├── Endpoint: *genruntime.SecretDestination
+│   │   │       └── PropertyBag: genruntime.PropertyBag
+│   │   ├── OriginalVersion: string
+│   │   ├── Owner: *genruntime.KnownResourceReference
+│   │   ├── PropertyBag: genruntime.PropertyBag
+│   │   ├── Sku: 
+│   │   │   ├── Capacity: *int
+│   │   │   ├── Name: *string
+│   │   │   ├── PropertyBag: genruntime.PropertyBag
+│   │   │   └── Tier: *string
+│   │   ├── Tags: Map[string]string
+│   │   └── ZoneRedundant: *bool
+│   └── Status: ---
+
+├── NamespacesQueue: Resource
+│   ├── Spec: 
+│   │   ├── AutoDeleteOnIdle: *string
+│   │   ├── AzureName: Validated[string]
+│   │   ├── DeadLetteringOnMessageExpiration: *bool
+│   │   ├── DefaultMessageTimeToLive: *string
+│   │   ├── DuplicateDetectionHistoryTimeWindow: *string
+│   │   ├── EnableBatchedOperations: *bool
+│   │   ├── EnableExpress: *bool
+│   │   ├── EnablePartitioning: *bool
+│   │   ├── ForwardDeadLetteredMessagesTo: *string
+│   │   ├── ForwardTo: *string
+│   │   ├── Location: *string
+│   │   ├── LockDuration: *string
+│   │   ├── MaxDeliveryCount: *int
+│   │   ├── MaxSizeInMegabytes: *int
+│   │   ├── OriginalVersion: string
+│   │   ├── Owner: *genruntime.KnownResourceReference
+│   │   ├── PropertyBag: genruntime.PropertyBag
+│   │   ├── RequiresDuplicateDetection: *bool
+│   │   ├── RequiresSession: *bool
+│   │   └── Tags: Map[string]string
+│   └── Status: ---
+
+└── NamespacesTopic: Resource
+    ├── Spec: 
+    │   ├── AutoDeleteOnIdle: *string
+    │   ├── AzureName: Validated[string]
+    │   ├── DefaultMessageTimeToLive: *string
+    │   ├── DuplicateDetectionHistoryTimeWindow: *string
+    │   ├── EnableBatchedOperations: *bool
+    │   ├── EnableExpress: *bool
+    │   ├── EnablePartitioning: *bool
+    │   ├── Location: *string
+    │   ├── MaxSizeInMegabytes: *int
+    │   ├── OriginalVersion: string
+    │   ├── Owner: *genruntime.KnownResourceReference
+    │   ├── PropertyBag: genruntime.PropertyBag
+    │   ├── RequiresDuplicateDetection: *bool
+    │   ├── SupportOrdering: *bool
+    │   └── Tags: Map[string]string
+    └── Status: ---
+
+├── NamespacesTopicsSubscription: Resource
+│   ├── Spec: Object (15 properties)
+│   │   ├── AutoDeleteOnIdle: Validated<*string> (0 rules)
+│   │   ├── AzureName: Validated<string> (2 rules)
+│   │   │   ├── Rule 0: {MaxLength %!s(int64=50)}
+│   │   │   └── Rule 1: {MinLength %!s(int64=1)}
+│   │   ├── DeadLetteringOnFilterEvaluationExceptions: *bool
+│   │   ├── DeadLetteringOnMessageExpiration: *bool
+│   │   ├── DefaultMessageTimeToLive: Validated<*string> (0 rules)
+│   │   ├── DuplicateDetectionHistoryTimeWindow: Validated<*string> (0 rules)
+│   │   ├── EnableBatchedOperations: *bool
+│   │   ├── ForwardDeadLetteredMessagesTo: *string
+│   │   ├── ForwardTo: *string
+│   │   ├── Location: *string
+│   │   ├── LockDuration: Validated<*string> (0 rules)
+│   │   ├── MaxDeliveryCount: *int
+│   │   ├── Owner: *genruntime.KnownResourceReference
+│   │   ├── RequiresSession: *bool
+│   │   └── Tags: map[string]string
+│   └── Status: -
