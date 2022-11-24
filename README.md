@@ -16,6 +16,7 @@ setup:
   topics:
    - name: myTopic
 ```
+
 **NOTE**: the queue and the resource group are required for the service bus to provision the queues and instance required for the application.
 
 ## Using it in your helm chart.
