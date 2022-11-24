@@ -34,7 +34,7 @@ spec:
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesQueue
 metadata:
-  name: sb-queue-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
+  name: {{ required "All .Values.servicebus.setup.queues items need a 'name' property" $queue.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   azureName: {{ $queue.name }}
@@ -53,7 +53,7 @@ spec:
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopic
 metadata:
-  name: sb-topic-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
+  name: {{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   azureName: {{ $topic.name }}
@@ -66,10 +66,10 @@ spec:
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopicsSubscription
 metadata:
-  name: sb-topic-sub-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
+  name: sb-sub-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
 spec:
   owner:
-    name: sb-topic-{{ template "hmcts.releasename.v2" $base }}-{{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
+    name: {{ required "All .Values.servicebus.setup.topics items need a 'name' property" $topic.name }}
         {{- end -}}
       {{- end -}}
   {{- end -}}
