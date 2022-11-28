@@ -5,7 +5,7 @@ metadata:
   name: {{ template "hmcts.releasename.v2" . }}-test-configmap
 data:
   entrypoint.sh: |-
-    #!/bin/sh
+    #!/bin/sh -xv
 
     namespace="$1"
     root_key="$2"
@@ -58,7 +58,7 @@ spec:
         - name: ROOT_KEY
           valueFrom:
             configMapKeyRef:
-              name: identity-settings
+              name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
               key: principalId
       command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
