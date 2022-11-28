@@ -79,9 +79,6 @@ spec:
       clientId:
         name: identity-settings
         key: clientId
-      tenantId:
-        name: identity-settings
-        key: tenantId
 
 ---
 apiVersion: authorization.azure.com/v1beta20200801preview
