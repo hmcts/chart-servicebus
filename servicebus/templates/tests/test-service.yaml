@@ -53,13 +53,8 @@ spec:
         - name: configmap-volume
           mountPath: /entrypoint
       env:
-        - name: SERVICE_NAME
-          value: {{ template "hmcts.releasename.v2" . }}
         - name: NAMESPACE
-          valueFrom:
-            secretKeyRef:
-              name: servicebus-secret-queue-{{ template "hmcts.releasename.v2" . }}-{{ $queueName }}
-              key: namespaceName
+          value:  servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
         - name: ROOT_KEY
           valueFrom:
             configMapKeyRef:

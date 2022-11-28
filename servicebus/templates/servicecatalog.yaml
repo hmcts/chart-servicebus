@@ -1,27 +1,24 @@
 {{- $globals := .Values.global | default dict -}}
 {{- $tags := $globals.tags | default dict -}}
-----
-apiVersion: servicebus.azure.com/v1alpha1api20210101preview
+---
+apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: Namespace
 metadata:
   name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
 spec:
   tags:
-    app.kubernetes.io_name: {{ template "hmcts.servicebus.releaseName" . }}
     helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io_name: {{ template "hmcts.servicebus.releaseName" . }}
     application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}
     builtFrom: {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}
     businessArea: {{ required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) }}
     environment: {{ required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) }}
-
-  location:  {{ .Values.location }}
+  location: {{ .Values.location }}
   owner:
     name: {{ required "A resource group ( .Values.resourceGroup ) is required for storage creation" .Values.resourceGroup | quote }}
   sku:
     name: Standard
   zoneRedundant: {{ .Values.zoneRedundant | default false }}
-
-
 
 {{- if .Values.setup -}}
   {{- if .Values.setup.queues -}}
@@ -34,11 +31,11 @@ metadata:
 spec:
   owner:
     name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
-  {{- end }}
+    {{- end }}
   {{- end }}
 
   {{- if .Values.setup.topics -}}
-  {{- range $topics := .Values.setup.topics }}
+    {{- range $topics := .Values.setup.topics }}
 ---
 apiVersion: servicebus.azure.com/v1alpha1api20210101preview
 kind: NamespacesTopic
@@ -47,10 +44,9 @@ metadata:
 spec:
   owner:
     name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
-  {{- end }}
     {{- end }}
+  {{- end }}
 {{- end }}
-
 
 
 ---
@@ -60,12 +56,12 @@ metadata:
   name: servicebus-identity-{{ template "hmcts.servicebus.releaseName" . }}
 spec:
   tags:
-    app.kubernetes.io_name: { { template "hmcts.blobstorage.releaseName" . } }
-    helm.sh_chart: { { .Chart.Name } }-{{ .Chart.Version }}
-    application: { { required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) } }
-    builtFrom: { { required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) } }
-    businessArea: { { required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) } }
-    environment: { { required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) } }
+    app.kubernetes.io_name: {{ template "hmcts.servicebus.releaseName" . }}
+    helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}
+    builtFrom: {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}
+    businessArea: {{ required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) }}
+    environment: {{ required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) }}
   location: {{ .Values.location }}
   owner:
     name: {{ required "A resource group ( .Values.resourceGroup ) is required for storage creation" .Values.resourceGroup | quote }}
@@ -79,6 +75,7 @@ spec:
       clientId:
         name: identity-settings
         key: clientId
+
 
 ---
 apiVersion: authorization.azure.com/v1beta20200801preview
@@ -99,5 +96,3 @@ spec:
   roleDefinitionReference:
     # This ARM ID represents "Contributor" - you can read about other built in roles here: https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
     armId: /subscriptions/{{ .Values.subscriptionId }}/providers/Microsoft.Authorization/roleDefinitions/090c5cfd-751d-490a-894a-3ce6f1109419
-
-
