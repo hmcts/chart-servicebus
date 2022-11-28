@@ -91,7 +91,7 @@ spec:
     kind: ResourceGroup
   # This is the Principal ID of the AAD identity to which the role will be assigned
   principalIdFromConfig:
-    name: identity-settings
+    name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
     key: principalId
   roleDefinitionReference:
     # This ARM ID represents "Contributor" - you can read about other built in roles here: https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
