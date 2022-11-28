@@ -62,8 +62,8 @@ spec:
               key: namespaceName
         - name: ROOT_KEY
           valueFrom:
-            secretKeyRef:
-              name: servicebus-secret-namespace-{{ template "hmcts.releasename.v2" . }}
-              key: primaryKey
+            configMapKeyRef:
+              name: identity-settings
+              key: principalId
       command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
