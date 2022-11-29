@@ -1,22 +1,3 @@
-
----
-apiVersion: "aadpodidentity.k8s.io/v1"
-kind: AzureIdentity
-metadata:
-  name: "{{ template "hmcts.releasename.v2" . }}-aad-id"
-  spec:
-    resourceID: /subscriptions/8b6ea922-0862-443e-af15-6056e1c9b9a4/resourcegroups/managed-identities-preview-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/plum-preview-mi
-    clientID: 8ca0ac9d-70dd-4a87-9dbc-3f45cf911174
-
----
-apiVersion: "aadpodidentity.k8s.io/v1"
-kind: AzureIdentityBinding
-metadata:
-  name: "{{ template "hmcts.releasename.v2" . }}-add-binding"
-spec:
-  azureIdentity: "{{ template "hmcts.releasename.v2" . }}-aad-id"
-  selector: servicebus
-
 ---
 apiVersion: v1
 kind: ConfigMap
