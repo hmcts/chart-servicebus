@@ -69,7 +69,7 @@ spec:
         name: {{ template "hmcts.releasename.v2" . }}-test-configmap
   containers:
     - name: {{ template "hmcts.releasename.v2" . }}-test-service
-      image: alpine:3.17
+      image: python:alpine
       volumeMounts:
         - name: configmap-volume
           mountPath: /entrypoint
@@ -81,5 +81,5 @@ spec:
             configMapKeyRef:
               name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
               key: principalId
-      command: ["sh", "-c", "apk add --update --no-cache -q --virtual=build gcc musl-dev python3-dev libffi-dev openssl-dev cargo make openssl openssl-dev ca-certificates jq curl py-pip  && pip install --no-cache-dir azure-cli -q  && apk del --purge build  && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
+      command: ["sh", "-c", "apk add --update --no-cache -q --virtual=build gcc musl-dev python3-dev libffi-dev openssl-dev cargo make openssl ca-certificates jq curl && pip install --upgrade pip  && pip install  azure-cli -q   && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
