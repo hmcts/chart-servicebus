@@ -38,7 +38,7 @@ data:
       "${queue_url}/messages?api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
-{{- $queueName := (index .Values.setup.queues 0).name }}
+  {{- $queueName := (index .Values.setup.queues 0).name }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -54,18 +54,18 @@ spec:
         defaultMode: 0755
         name: {{ template "hmcts.releasename.v2" . }}-test-configmap
   containers:
-    - name: {{ template "hmcts.releasename.v2" . }}-test-service
-      image: mcr.microsoft.com/azure-cli
-      volumeMounts:
-        - name: configmap-volume
-          mountPath: /entrypoint
-      env:
-        - name: NAMESPACE
-          value:  servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
-        - name: ROOT_KEY
-          valueFrom:
-            configMapKeyRef:
-              name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
-              key: principalId
-      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
+      - name: {{ template "hmcts.releasename.v2" . }}-test-service
+        image: mcr.microsoft.com/azure-cli
+        volumeMounts:
+          - name: configmap-volume
+            mountPath: /entrypoint
+        env:
+          - name: NAMESPACE
+            value:  servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
+          - name: ROOT_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
+                key: principalId
+        command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
   restartPolicy: Never
