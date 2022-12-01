@@ -26,23 +26,16 @@ data:
     #!/bin/sh -xv
 
     namespace="$1"
-    #root_key="$2"
-    queue_name="$3"
+    queue_name="$2"
     az login --identity
     accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq .accessToken)
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
 
-   echo "curl -v -X POST \
-      -H \"Authorization: $accesstoken\" \
-      -d 'This is a message.' \
-      \"${queue_url}/messages??api-version=2015-01\" 2>&1 | grep 'HTTP/' | awk 'END{print $3}'"
-
-
     httpstatuscode=$(curl -v -X POST \
       -H "Authorization: $accesstoken" \
       -d 'This is a message.' \
-      "${queue_url}/messages??api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
+      "${queue_url}/messages?api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
 
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
@@ -75,5 +68,5 @@ spec:
             configMapKeyRef:
               name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
               key: principalId
-      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
+      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
   restartPolicy: Never
