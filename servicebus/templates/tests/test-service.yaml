@@ -33,6 +33,12 @@ data:
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
 
+   echo "curl -v -X POST \
+      -H \"Authorization: $accesstoken\" \
+      -d 'This is a message.' \
+      \"${queue_url}/messages??api-version=2015-01\" 2>&1 | grep 'HTTP/' | awk 'END{print $3}'"
+
+
     httpstatuscode=$(curl -v -X POST \
       -H "Authorization: $accesstoken" \
       -d 'This is a message.' \
