@@ -26,30 +26,17 @@ data:
     #!/bin/sh -xv
 
     namespace="$1"
-    root_key="$2"
+    #root_key="$2"
     queue_name="$3"
     az login --identity
     accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq .accessToken)
-    echo $accesstoken
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
-    expiry=${expiry:=$((60 * 60 * 24))} # Default token expiry is 1 day
-
-    encoded_uri=$(echo -n $queue_url | jq -s -R -r @uri)
-    ttl=$(($(date +%s) + $expiry))
-    utf8_signature=$(printf "%s\n%s" $encoded_uri $ttl | iconv -t utf8)
-    hash=$(echo -n "$utf8_signature" | openssl sha256 -hmac $root_key -binary | base64)
-    encoded_hash=$(echo -n $hash | jq -s -R -r @uri)
-
-    authorization_header="SharedAccessSignature sr=${encoded_uri}&sig=${encoded_hash}&se=${ttl}&skn=RootManageSharedAccessKey"
 
     httpstatuscode=$(curl -v -X POST \
-      -H "Authorization: $authorization_header" \
-      -H 'BrokerProperties: {"Label":"M1","State":"Active","TimeToLive":10}' \
-      -H 'Content-Length: 18' \
-      -H 'Content-Type: application/atom+xml;type=entry;charset=utf-8' \
+      -H "Authorization: $accesstoken" \
       -d 'This is a message.' \
-      "${queue_url}/messages?timeout=60" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
+      "${queue_url}/messages??api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
 
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
