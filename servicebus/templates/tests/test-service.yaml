@@ -28,7 +28,7 @@ data:
     namespace="$1"
     queue_name="$2"
     az login --identity
-    accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq .accessToken)
+    accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq -r .accessToken)
     echo $accesstoken
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
