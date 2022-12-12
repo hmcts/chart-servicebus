@@ -5,7 +5,7 @@ apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: Namespace
 metadata:
   name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
-  {{- ( include "hmcts.blobstorage.labels" . ) | indent 4 }}
+  {{- ( include "hmcts.servicebus.labels" . ) | indent 4 }}
 spec:
   tags:
     helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -29,7 +29,7 @@ apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesQueue
 metadata:
   name: queue-{{ template "hmcts.servicebus.releaseName" . }}-{{ $queue.name }}
-  {{- ( include "hmcts.blobstorage.labels" . ) | indent 4 }}
+  {{- ( include "hmcts.servicebus.labels" . ) | indent 4 }}
 spec:
   owner:
     name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
@@ -44,7 +44,7 @@ apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopic
 metadata:
   name: topic-{{ template "hmcts.servicebus.releaseName" . }}-{{ $topics.name }}
-  {{- ( include "hmcts.blobstorage.labels" . ) | indent 4 }}
+  {{- ( include "hmcts.servicebus.labels" . ) | indent 4 }}
 spec:
   owner:
     name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
