@@ -65,7 +65,7 @@ spec:
           - name: ROOT_KEY
             valueFrom:
               configMapKeyRef:
-                name: servicebus-configmap-{{ template "hmcts.servicebus.releaseName" . }}
+                name: {{ template "hmcts.releasename.v2" . }}-test-configmap
                 key: principalId
         command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
   restartPolicy: Never
