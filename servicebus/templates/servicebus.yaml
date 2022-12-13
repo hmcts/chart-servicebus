@@ -1,5 +1,6 @@
 {{- $globals := .Values.global | default dict -}}
 {{- $tags := $globals.tags | default dict -}}
+{{- $base := . -}}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: Namespace
@@ -28,11 +29,11 @@ spec:
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesQueue
 metadata:
-  name: queue-{{ template "hmcts.servicebus.releaseName" . }}-{{ $queue.name }}
-  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
+  name: queue-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $queue.name }}
+  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
+    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $base }}
   azureName: {{ $queue.name }}
     {{- end }}
   {{- end }}
@@ -43,11 +44,11 @@ spec:
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopic
 metadata:
-  name: topic-{{ template "hmcts.servicebus.releaseName" . }}-{{ $topics.name }}
-  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
+  name: topic-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $topics.name }}
+  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $ }}
+    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $base }}
   azureName: {{ $topics.name }}
     {{- end }}
   {{- end }}
