@@ -62,10 +62,5 @@ spec:
         env:
           - name: NAMESPACE
             value:  servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
-          - name: ROOT_KEY
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "hmcts.releasename.v2" . }}-test-configmap
-                key: principalId
         command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
   restartPolicy: Never
