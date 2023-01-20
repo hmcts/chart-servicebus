@@ -6,7 +6,7 @@ tags:
   builtFrom: ""
   businessArea: ""
   environment: ""
-location: uksouth
+location: westcentralus
 serviceplan: standard
 setup:
   queues:
