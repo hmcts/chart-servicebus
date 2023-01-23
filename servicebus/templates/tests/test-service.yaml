@@ -15,7 +15,6 @@ metadata:
 spec:
   azureIdentity: "{{ template "hmcts.releasename.v2" . }}-aad-id"
   selector: servicebus
-
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -27,7 +26,7 @@ data:
 
     namespace="$1"
     queue_name="$2"
-    az login --identity
+    for i in {1..5}; do az login --identity && break || sleep 15; done
     accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq -r .accessToken)
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
