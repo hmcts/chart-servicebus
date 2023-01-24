@@ -6,7 +6,6 @@ metadata:
 spec:
   resourceID: /subscriptions/8b6ea922-0862-443e-af15-6056e1c9b9a4/resourcegroups/managed-identities-preview-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/plum-preview-mi
   clientID: 8ca0ac9d-70dd-4a87-9dbc-3f45cf911174
-
 ---
 apiVersion: "aadpodidentity.k8s.io/v1"
 kind: AzureIdentityBinding
@@ -37,7 +36,7 @@ data:
       "${queue_url}/messages?api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
-  {{- $queueName := (index .Values.setup.queues 0).name }}
+{{- $queueName := (index .Values.setup.queues 0).name }}
 apiVersion: v1
 kind: Pod
 metadata:

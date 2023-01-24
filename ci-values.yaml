@@ -1,4 +1,4 @@
-resourceGroup: aso-sample-rg
+resourceGroup: aso-aks-rg
 subscriptionId: "8b6ea922-0862-443e-af15-6056e1c9b9a4"
 tags:
   teamName: ""
@@ -6,7 +6,7 @@ tags:
   builtFrom: ""
   businessArea: ""
   environment: ""
-location: westcentralus
+location: uksouth
 serviceplan: standard
 setup:
   queues:
