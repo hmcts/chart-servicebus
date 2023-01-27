@@ -18,6 +18,11 @@ spec:
   location: {{ .Values.location }}
   owner:
     name: {{ required "A resource group ( .Values.resourceGroup ) is required for storage creation" .Values.resourceGroup | quote }}
+  operatorSpec:
+    secrets:
+      endpoint:
+        name: servicebus-endpoint-{{ template "hmcts.servicebus.releaseName" . }}
+        key: endpoint
   sku:
     name: Standard
   zoneRedundant: {{ .Values.zoneRedundant | default false }}
