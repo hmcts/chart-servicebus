@@ -12,7 +12,7 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: {{ .Values.namespace }}-servicebus
+    name: {{ $.Values.namespace }}-servicebus
   azureName: {{ $queue.name }}
     {{- end }}
   {{- end }}
@@ -27,7 +27,7 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: {{ .Values.namespace }}-servicebus
+    name: {{ $.Values.namespace }}-servicebus
   azureName: {{ $topics.name }}
       {{- if .Values.setup.topics.subscriptionNeeded -}}
 ---
