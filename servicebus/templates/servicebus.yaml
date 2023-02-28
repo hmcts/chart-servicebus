@@ -1,32 +1,6 @@
 {{- $globals := .Values.global | default dict -}}
 {{- $tags := $globals.tags | default dict -}}
 {{- $base := . -}}
----
-apiVersion: servicebus.azure.com/v1beta20210101preview
-kind: Namespace
-metadata:
-  name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
-  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
-spec:
-  tags:
-    helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io_name: {{ template "hmcts.servicebus.releaseName" . }}
-    application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}
-    builtFrom: {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}
-    businessArea: {{ required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) }}
-    environment: {{ required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) }}
-  location: {{ .Values.location }}
-  owner:
-    name: {{ required "A resource group ( .Values.resourceGroup ) is required for storage creation" .Values.resourceGroup | quote }}
-  operatorSpec:
-    secrets:
-      endpoint:
-        name: servicebus-endpoint-{{ template "hmcts.servicebus.releaseName" . }}
-        key: endpoint
-  sku:
-    name: Standard
-  zoneRedundant: {{ .Values.zoneRedundant | default false }}
-
 {{- if .Values.setup -}}
   {{- if .Values.setup.queues -}}
     {{- range $queue := .Values.setup.queues }}
@@ -38,7 +12,7 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $base }}
+    name: {{ .Values.namespace }}-servicebus
   azureName: {{ $queue.name }}
     {{- end }}
   {{- end }}
@@ -53,8 +27,21 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: servicebus-namespace-{{ template "hmcts.servicebus.releaseName" $base }}
+    name: {{ .Values.namespace }}-servicebus
   azureName: {{ $topics.name }}
+      {{- if .Values.setup.topics.subscriptionNeeded -}}
+---
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesTopicsSubscription
+metadata:
+  name: topic-subscription-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $topics.name }}
+  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
+spec:
+  owner:
+    name: topic-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $topics.name }}
+  azureName: {{ $topics.name }}
+  requiresSession: true
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}

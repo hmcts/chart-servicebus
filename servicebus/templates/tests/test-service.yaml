@@ -1,20 +1,4 @@
 ---
-apiVersion: "aadpodidentity.k8s.io/v1"
-kind: AzureIdentity
-metadata:
-  name: "{{ template "hmcts.releasename.v2" . }}-aad-id"
-spec:
-  resourceID: /subscriptions/8b6ea922-0862-443e-af15-6056e1c9b9a4/resourcegroups/managed-identities-preview-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/plum-preview-mi
-  clientID: 8ca0ac9d-70dd-4a87-9dbc-3f45cf911174
----
-apiVersion: "aadpodidentity.k8s.io/v1"
-kind: AzureIdentityBinding
-metadata:
-  name: "{{ template "hmcts.releasename.v2" . }}-add-binding"
-spec:
-  azureIdentity: "{{ template "hmcts.releasename.v2" . }}-aad-id"
-  selector: servicebus
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -24,16 +8,29 @@ data:
     #!/bin/sh -xv
 
     namespace="$1"
-    queue_name="$2"
-    for i in {1..10}; do az login --identity && break || sleep 20; done
-    accesstoken=$(az account get-access-token --resource https://servicebus.azure.net | jq -r .accessToken)
+    root_key="$2"
+    queue_name="$3"
+
     servicebus_url="servicebus.windows.net"
     queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
+    expiry=${expiry:=$((60 * 60 * 24))} # Default token expiry is 1 day
+
+    encoded_uri=$(echo -n $queue_url | jq -s -R -r @uri)
+    ttl=$(($(date +%s) + $expiry))
+    utf8_signature=$(printf "%s\n%s" $encoded_uri $ttl | iconv -t utf8)
+    hash=$(echo -n "$utf8_signature" | openssl sha256 -hmac $root_key -binary | base64)
+    encoded_hash=$(echo -n $hash | jq -s -R -r @uri)
+
+    authorization_header="SharedAccessSignature sr=${encoded_uri}&sig=${encoded_hash}&se=${ttl}&skn=RootManageSharedAccessKey"
 
     httpstatuscode=$(curl -v -X POST \
-      -H "Authorization: $accesstoken" \
+      -H "Authorization: $authorization_header" \
+      -H 'BrokerProperties: {"Label":"M1","State":"Active","TimeToLive":10}' \
+      -H 'Content-Length: 18' \
+      -H 'Content-Type: application/atom+xml;type=entry;charset=utf-8' \
       -d 'This is a message.' \
-      "${queue_url}/messages?api-version=2015-01" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
+      "${queue_url}/messages?timeout=60" 2>&1 | grep 'HTTP/' | awk 'END{print $3}')
+
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
 {{- $queueName := (index .Values.setup.queues 0).name }}
@@ -43,8 +40,6 @@ metadata:
   name: "{{ template "hmcts.releasename.v2" . }}-test-service"
   annotations:
     "helm.sh/hook": test-success
-  labels:
-    aadpodidbinding: servicebus
 spec:
   volumes:
     - name: configmap-volume
@@ -52,13 +47,21 @@ spec:
         defaultMode: 0755
         name: {{ template "hmcts.releasename.v2" . }}-test-configmap
   containers:
-      - name: {{ template "hmcts.releasename.v2" . }}-test-service
-        image: mcr.microsoft.com/azure-cli
-        volumeMounts:
-          - name: configmap-volume
-            mountPath: /entrypoint
-        env:
-          - name: NAMESPACE
-            value:  servicebus-namespace-{{ template "hmcts.servicebus.releaseName" . }}
-        command: ["sh", "-c", "apk add --update --no-cache openssl ca-certificates jq curl  && /entrypoint/entrypoint.sh ${NAMESPACE} {{ $queueName }}"]
+    - name: {{ template "hmcts.releasename.v2" . }}-test-service
+      image: alpine:3.13
+      volumeMounts:
+        - name: configmap-volume
+          mountPath: /entrypoint
+      env:
+        - name: NAMESPACE
+          valueFrom:
+            secretKeyRef:
+              name: servicebus-access
+              key: namespaceName
+        - name: ROOT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: servicebus-access
+              key: primaryKey
+      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
   restartPolicy: Never
