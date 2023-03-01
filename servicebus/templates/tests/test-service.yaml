@@ -12,7 +12,7 @@ data:
     queue_name="$3"
 
     servicebus_url="servicebus.windows.net"
-    queue_url="https://${namespace}.${servicebus_url}/${queue_name}"
+    queue_url="https://${namespace}-sb-preview.${servicebus_url}/${queue_name}"
     expiry=${expiry:=$((60 * 60 * 24))} # Default token expiry is 1 day
 
     encoded_uri=$(echo -n $queue_url | jq -s -R -r @uri)
