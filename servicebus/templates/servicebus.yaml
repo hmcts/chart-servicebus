@@ -29,7 +29,7 @@ spec:
   owner:
     name: {{ $.Values.namespace }}-servicebus
   azureName: {{ $topics.name }}
-      {{- if .Values.setup.topics.subscriptionNeeded -}}
+      {{- if $topics.subscriptionNeeded -}}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopicsSubscription
