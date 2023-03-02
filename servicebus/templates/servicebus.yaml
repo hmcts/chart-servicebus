@@ -1,4 +1,4 @@
-{{- $root := .Values | default dict -}}
+{{- $release := .Release | default dict -}}
 {{- $globals := .Values.global | default dict -}}
 {{- $tags := $globals.tags | default dict -}}
 {{- $base := . -}}
@@ -13,7 +13,7 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: {{ $root.namespace }}
+    name: {{ $release.Namespace }}
   azureName: {{ $queue.name }}
     {{- end }}
   {{- end }}
@@ -28,7 +28,7 @@ metadata:
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: {{ $root.namespace }}
+    name: {{ $release.Namespace }}
   azureName: {{ $topics.name }}
       {{- if $topics.subscriptionNeeded -}}
 ---
