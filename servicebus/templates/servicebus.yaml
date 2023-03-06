@@ -14,7 +14,7 @@ metadata:
 spec:
   owner:
     name: {{ $release.Namespace }}
-  azureName: {{ $queue.name }}
+  azureName: {{ $queue.name }}-{{ template "hmcts.servicebus.releaseName" $base }}
     {{- end }}
   {{- end }}
 
@@ -29,7 +29,7 @@ metadata:
 spec:
   owner:
     name: {{ $release.Namespace }}
-  azureName: {{ $topics.name }}
+  azureName: {{ $topics.name }}-{{ template "hmcts.servicebus.releaseName" $base }}
       {{- if $topics.subscriptionNeeded -}}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
@@ -40,7 +40,7 @@ metadata:
 spec:
   owner:
     name: topic-{{ template "hmcts.servicebus.releaseName" $base }}-{{ $topics.name }}
-  azureName: {{ $topics.name }}
+  azureName: {{ $topics.name }}-{{ template "hmcts.servicebus.releaseName" $base }}
   requiresSession: true
       {{- end }}
     {{- end }}
