@@ -1,8 +1,9 @@
+{{- $base := . -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "hmcts.releasename.v2" . }}-test-configmap
+  name: {{ template "hmcts.servicebus.releaseName" $base }}-test-configmap
 data:
   entrypoint.sh: |-
     #!/bin/sh -xv
@@ -37,7 +38,7 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ template "hmcts.releasename.v2" . }}-test-service"
+  name: "{{ template "hmcts.servicebus.releaseName" $base }}-test-service"
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -45,14 +46,16 @@ spec:
     - name: configmap-volume
       configMap:
         defaultMode: 0755
-        name: {{ template "hmcts.releasename.v2" . }}-test-configmap
+        name: {{ template "hmcts.servicebus.releaseName" $base }}-test-configmap
   containers:
-    - name: {{ template "hmcts.releasename.v2" . }}-test-service
+    - name: {{ template "hmcts.servicebus.releaseName" $base }}-test-service
       image: alpine:3.13
       volumeMounts:
         - name: configmap-volume
           mountPath: /entrypoint
       env:
+        - name: QUEUE_NAME
+          value: {{ $queueName }}-{{ template "hmcts.servicebus.releaseName" $base }}
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:
@@ -63,5 +66,5 @@ spec:
             secretKeyRef:
               name: servicebus-access
               key: primaryKey
-      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
+      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} ${QUEUE_NAME}"]
   restartPolicy: Never
