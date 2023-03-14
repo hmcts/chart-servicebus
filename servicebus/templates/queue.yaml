@@ -1,0 +1,16 @@
+{{- if .Values.setup -}}
+  {{- if .Values.setup.queues -}}
+    {{- range $queue := .Values.setup.queues }}
+---
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesQueue
+metadata:
+  name: queue-{{ template "hmcts.releasename.v2" . }}-{{ $queue.name }}
+  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
+spec:
+  owner:
+    name: {{ .Values.sbNamespace }}
+  azureName: {{ $queue.name }}-{{ template "hmcts.releasename.v2" . }}
+    {{- end }}
+  {{- end }}
+{{- end }}
