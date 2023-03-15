@@ -1,9 +1,7 @@
-{{- $base := . -}}
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "hmcts.servicebus.releaseName" $base }}-test-configmap
+  name: {{ template "hmcts.releasename.v2" . }}-test-configmap
 data:
   entrypoint.sh: |-
     #!/bin/sh -xv
@@ -38,7 +36,7 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ template "hmcts.servicebus.releaseName" $base }}-test-service"
+  name: "{{ template "hmcts.releasename.v2" . }}-test-service"
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -46,16 +44,16 @@ spec:
     - name: configmap-volume
       configMap:
         defaultMode: 0755
-        name: {{ template "hmcts.servicebus.releaseName" $base }}-test-configmap
+        name: {{ template "hmcts.releasename.v2" . }}-test-configmap
   containers:
-    - name: {{ template "hmcts.servicebus.releaseName" $base }}-test-service
+    - name: {{ template "hmcts.releasename.v2" . }}-test-service
       image: alpine:3.13
       volumeMounts:
         - name: configmap-volume
           mountPath: /entrypoint
       env:
         - name: QUEUE_NAME
-          value: {{ $queueName }}-{{ template "hmcts.servicebus.releaseName" $base }}
+          value: {{ $queueName }}-{{ template "hmcts.releasename.v2" . }}
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:

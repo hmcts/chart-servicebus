@@ -1,0 +1,25 @@
+{{- $globals := .Values.global | default dict -}}
+{{- $tags := $globals.tags | default dict -}}
+{{- if .Values.deploySbNamespace -}}
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: Namespace
+metadata:
+  name: {{ .Values.sbNamespace }}
+  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
+spec:
+  tags:
+  tags:
+    app.kubernetes.io_name: {{ template "hmcts.releasename.v2" . }}
+    helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}
+    builtFrom: {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}
+    businessArea: {{ required "Business Area name (.Values.tags.businessArea) is required" (.Values.tags.businessArea | default $tags.businessArea) }}
+    environment: {{ required "Environment name (.Values.tags.environment) is required" (.Values.tags.environment | default $tags.environment) }}
+  location: {{ .Values.location }}
+  owner:
+    name: {{ .Values.resourceGroup }}
+  azureName: {{ .Values.sbNamespace }}
+  sku:
+    name: Standard
+  zoneRedundant: false
+{{- end }}
