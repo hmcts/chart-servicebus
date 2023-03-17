@@ -1,5 +1,6 @@
 location: uksouth
 serviceplan: basic
+sbNamespace:
 tags:
   teamName:
   applicationName:

@@ -1,11 +1,10 @@
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "hmcts.releasename.v2" . }}-test-configmap
 data:
   entrypoint.sh: |-
-    #!/bin/sh
+    #!/bin/sh -xv
 
     namespace="$1"
     root_key="$2"
@@ -53,17 +52,17 @@ spec:
         - name: configmap-volume
           mountPath: /entrypoint
       env:
-        - name: SERVICE_NAME
-          value: {{ template "hmcts.releasename.v2" . }}
+        - name: QUEUE_NAME
+          value: {{ $queueName }}-{{ template "hmcts.releasename.v2" . }}
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:
-              name: servicebus-secret-queue-{{ template "hmcts.releasename.v2" . }}-{{ $queueName }}
+              name: servicebus-access
               key: namespaceName
         - name: ROOT_KEY
           valueFrom:
             secretKeyRef:
-              name: servicebus-secret-namespace-{{ template "hmcts.releasename.v2" . }}
+              name: servicebus-access
               key: primaryKey
-      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} {{ $queueName }}"]
+      command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} ${QUEUE_NAME}"]
   restartPolicy: Never

@@ -17,7 +17,7 @@ keywords:
 - publish
 - amqp
 
-dependencies: # A list of the chart requirements (optional)
+dependencies:
   - name: library
-    version: 1.0.7
+    version: 2.0.9
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/

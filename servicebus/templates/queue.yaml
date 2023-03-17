@@ -1,0 +1,18 @@
+{{- $base := . -}}
+{{- $namespace := .Values.sbNamespace -}}
+{{- if .Values.setup -}}
+  {{- if .Values.setup.queues -}}
+    {{- range $queue := .Values.setup.queues }}
+---
+apiVersion: servicebus.azure.com/v1beta20210101preview
+kind: NamespacesQueue
+metadata:
+  name: queue-{{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
+  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
+spec:
+  owner:
+    name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
+  azureName: {{ $queue.name }}-{{ template "hmcts.releasename.v2" $base }}
+    {{- end }}
+  {{- end }}
+{{- end }}
