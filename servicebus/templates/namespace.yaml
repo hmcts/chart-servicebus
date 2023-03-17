@@ -8,7 +8,6 @@ metadata:
   {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
 spec:
   tags:
-  tags:
     app.kubernetes.io_name: {{ template "hmcts.releasename.v2" . }}
     helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}

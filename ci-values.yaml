@@ -18,7 +18,6 @@ setup:
    - name: charttopic2
 
 global:
-
   tags:
     teamName: "Software Engineering"
     applicationName: "core"
