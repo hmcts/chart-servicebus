@@ -72,6 +72,7 @@ setup:
 ## Migration to v1.0 (from OSBA to ASO)
 
 - Finish [prerequisites](#prerequisites)
+- Above section should also cover changes needed to setup application secrets.
 - Latest version chart config example :
 
 ```yaml
@@ -94,7 +95,6 @@ setup:
   topics:
    - name: myTopic
 ```
-- Secrets are no more created by this chart, see [flux config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v2.md#service-bus-namespace) on how to setup secrets in your application.
 
 ## Development and Testing
 
