@@ -95,6 +95,7 @@ setup:
   topics:
    - name: myTopic
 ```
+- Actual queue and topic names that are created in azure for above configuration will be with names `{{ .Release.Name-yourQueue}}`,`{{ .Release.Name-myTopic}}`.
 
 ## Development and Testing
 

@@ -6,23 +6,23 @@
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopic
 metadata:
-  name: topic-{{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+  name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
-  azureName: {{ $topics.name }}-{{ template "hmcts.releasename.v2" $base }}
+  azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   {{- if $topics.subscriptionNeeded -}}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopicsSubscription
 metadata:
-  name: topic-subscription-{{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+  name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
 spec:
   owner:
-    name: topic-{{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  azureName: {{ $topics.name }}-{{ template "hmcts.releasename.v2" $base }}
+    name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+  azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   requiresSession: {{ $topics.requiresSession | default false }}
     {{- end }}
   {{- end }}

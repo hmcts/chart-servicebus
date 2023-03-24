@@ -19,6 +19,6 @@ spec:
     name: {{ .Values.resourceGroup }}
   azureName: {{ .Values.sbNamespace }}
   sku:
-    name: Standard
+    name: {{ .Values.serviceplan }}
   zoneRedundant: false
 {{- end }}
