@@ -53,7 +53,7 @@ spec:
           mountPath: /entrypoint
       env:
         - name: QUEUE_NAME
-          value: {{ $queueName }}-{{ template "hmcts.releasename.v2" . }}
+          value: {{ template "hmcts.releasename.v2" . }}-{{ $queueName }}
         - name: NAMESPACE
           valueFrom:
             secretKeyRef:
