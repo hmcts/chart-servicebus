@@ -12,7 +12,7 @@ spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
   azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  {{- if $topics.subscriptionNeeded -}}
+  {{- if $topics.subscriptionNeeded }}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesTopicsSubscription
