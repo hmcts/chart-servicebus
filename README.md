@@ -25,6 +25,7 @@ setup:
 ## Using it in your helm chart.
 
 - Refer to [cnp-flux-config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v2.md#service-bus-namespace) on how to setup Kubernetes secret with connection string and how to use it with your app.
+- Actual queue and topic names that are created in azure for above configuration will be with names `{{ .Release.Name}}-servicebus-yourQueue`,`{{ .Release.Name-}}-servicebus-myTopic`.
 
 ## Configuration
 
@@ -95,7 +96,7 @@ setup:
   topics:
    - name: myTopic
 ```
-- Actual queue and topic names that are created in azure for above configuration will be with names `{{ .Release.Name-yourQueue}}`,`{{ .Release.Name-myTopic}}`.
+- Actual queue and topic names that are created in azure for above configuration will be with names `{{ .Release.Name}}-servicebus-yourQueue`,`{{ .Release.Name-}}-servicebus-myTopic`.
 
 ## Development and Testing
 
