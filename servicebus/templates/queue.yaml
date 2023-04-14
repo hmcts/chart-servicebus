@@ -1,7 +1,6 @@
 {{- $base := . -}}
 {{- $namespace := .Values.sbNamespace -}}
-{{- if .Values.setup -}}
-  {{- if .Values.setup.queues -}}
+{{- if .Values.setup.queues -}}
     {{- range $queue := .Values.setup.queues }}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
@@ -13,6 +12,5 @@ spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
   azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
-    {{- end }}
   {{- end }}
 {{- end }}
