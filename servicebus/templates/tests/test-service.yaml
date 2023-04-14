@@ -32,7 +32,8 @@ data:
 
     [ "$httpstatuscode" = "201" ] && exit 0 || exit 1
 ---
-{{- $queueName := (index .Values.setup.queues 0).name }}
+{{- if .Values.setup.queues -}}
+  {{- $queueName := (index .Values.setup.queues 0).name }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -66,3 +67,4 @@ spec:
               key: primaryKey
       command: ["sh", "-c", "apk add --update --no-cache openssl openssl-dev ca-certificates jq curl && /entrypoint/entrypoint.sh ${NAMESPACE} ${ROOT_KEY} ${QUEUE_NAME}"]
   restartPolicy: Never
+{{- end }}
