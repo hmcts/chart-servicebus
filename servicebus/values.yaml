@@ -9,5 +9,3 @@ tags:
   environment:
 resourceGroup:
 setup:
-  queues:
-   - name: chartqueue
