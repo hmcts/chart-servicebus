@@ -1,7 +1,7 @@
 {{- $base := . -}}
 {{- $namespace := .Values.sbNamespace -}}
 {{- if .Values.setup.queues -}}
-    {{- range $queue := .Values.setup.queues }}
+  {{- range $queue := .Values.setup.queues }}
 ---
 apiVersion: servicebus.azure.com/v1beta20210101preview
 kind: NamespacesQueue
