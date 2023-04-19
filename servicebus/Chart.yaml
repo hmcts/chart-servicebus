@@ -19,5 +19,5 @@ keywords:
 
 dependencies:
   - name: library
-    version: 2.0.10
+    version: 2.0.11
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
