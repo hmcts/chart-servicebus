@@ -1,5 +1,5 @@
 resourceGroup: chart-tests-aso-preview-rg
-sbNamespace: chart-tests
+sbNamespace: chart-tests-servicebus
 tags:
   teamName: ""
   applicationName: ""
