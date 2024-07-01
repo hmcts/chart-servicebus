@@ -3,7 +3,7 @@
 {{- if .Values.setup.topics -}}
   {{- range $topics := .Values.setup.topics }}
 ---
-apiVersion: servicebus.azure.com/v1api20221001preview
+apiVersion: servicebus.azure.com/v1api20210101preview
 kind: NamespacesTopic
 metadata:
   name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
@@ -14,7 +14,7 @@ spec:
   azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   {{- if $topics.subscriptionNeeded }}
 ---
-apiVersion: servicebus.azure.com/v1api20221001preview
+apiVersion: servicebus.azure.com/v1api20210101preview
 kind: NamespacesTopicsSubscription
 metadata:
   name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
