@@ -1,7 +1,7 @@
 {{- $globals := .Values.global | default dict -}}
 {{- $tags := $globals.tags | default dict -}}
 {{- if .Values.deploySbNamespace -}}
-apiVersion: servicebus.azure.com/v1api20210101preview
+apiVersion: servicebus.azure.com/v1api20211101
 kind: Namespace
 metadata:
   name: {{ .Values.sbNamespace }}
