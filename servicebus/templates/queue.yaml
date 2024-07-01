@@ -3,7 +3,7 @@
 {{- if .Values.setup.queues -}}
   {{- range $queue := .Values.setup.queues }}
 ---
-apiVersion: servicebus.azure.com/v1api20221001preview
+apiVersion: servicebus.azure.com/v1api20210101preview
 kind: NamespacesQueue
 metadata:
   name: {{ template "hmcts.releasename.v2" $base }}-{{ $queue.name }}
