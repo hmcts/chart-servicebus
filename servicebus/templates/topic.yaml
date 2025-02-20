@@ -9,24 +9,13 @@ apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopic
 metadata:
   name: {{ $computedTopicName }}
-  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
+  {{- include "hmcts.labels.v2" $base | indent 2 }}
 spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
   azureName: {{ $computedTopicName }}
-  {{- end }}
-  {{- if $topics.subscriptionNeeded }}
----
-apiVersion: servicebus.azure.com/v1api20211101
-kind: NamespacesTopicsSubscription
-metadata:
-  name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
-spec:
-  owner:
-    name: {{ $computedTopicName }}
-  azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  requiresSession: {{ $topics.requiresSession | default false }}
     {{- end }}
+
+    {{- include "hmcts.topicSubscription" (dict "base" $base "topics" $topics "computedTopicName" $computedTopicName) | nindent 0 }}
   {{- end }}
   {{- end }}
