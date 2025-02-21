@@ -15,7 +15,23 @@ setup:
   topics:
    - name: charttopic1
      subscriptionNeeded: yes
+     fullName: hmc-servicebus-aat
+     create: false
+     rules:
+       - name: "testRule"
+         filterType: CorrelationFilter
+         correlationFilter :
+           - name: "hmctsServiceId"
+             value: "AAAA"
+           - name: "deploymentId"
+             value: "1234"
+       - name: "testRule2"
+         filterType: CorrelationFilter
+         correlationFilter:
+           - name: "testFilter"
+             value: "testValue"
    - name: charttopic2
+     subscriptionNeeded: yes
 
 global:
   tags:

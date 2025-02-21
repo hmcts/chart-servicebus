@@ -15,5 +15,10 @@ spec:
     name: {{ $computedTopicName }}
   azureName: {{ include "hmcts.releasename.v2" $base }}-{{ $topics.name }}
   requiresSession: {{ $topics.requiresSession | default false }}
+{{- if $topics.rules }}
+  {{- range $rule := $topics.rules }}
+    {{- include "hmcts.topicSubscriptionRule" (dict "base" $base "topics" $topics "rule" $rule) }}
+  {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
