@@ -2,7 +2,6 @@
 {{- $base := index . "base" -}}
 {{- $topics := index . "topics" -}}
 {{- $rule := index . "rule" -}}
----
 apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopicsSubscriptionsRule
 metadata:
@@ -16,7 +15,7 @@ spec:
   correlationFilter:
     properties:
       {{- range $filter := $rule.correlationFilter }}
-      {{ $filter.name }}: {{ $filter.value }}
+      "{{ $filter.name }}": "{{ $filter.value }}"
       {{- end }}
   {{- end }}
 {{- end }}

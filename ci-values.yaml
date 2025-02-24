@@ -16,7 +16,7 @@ setup:
    - name: charttopic1
      subscriptionNeeded: yes
      rules:
-       - name: "testRule"
+       - name: "testrule"
          filterType: CorrelationFilter
          correlationFilter :
            - name: "hmctsServiceId"

@@ -17,6 +17,7 @@ spec:
   requiresSession: {{ $topics.requiresSession | default false }}
 {{- if $topics.rules }}
   {{- range $rule := $topics.rules }}
+---
     {{- include "hmcts.topicSubscriptionRule" (dict "base" $base "topics" $topics "rule" $rule) }}
   {{- end }}
 {{- end }}
