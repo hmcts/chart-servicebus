@@ -23,7 +23,7 @@ setup:
              value: "AAAA"
            - name: "deploymentId"
              value: "1234"
-       - name: "anotherrule"
+       - name: "testRule2"
          filterType: CorrelationFilter
          correlationFilter:
            - name: "testFilter"
