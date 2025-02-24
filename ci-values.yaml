@@ -15,7 +15,21 @@ setup:
   topics:
    - name: charttopic1
      subscriptionNeeded: yes
+     rules:
+       - name: "testrule"
+         filterType: CorrelationFilter
+         correlationFilter :
+           - name: "hmctsServiceId"
+             value: "AAAA"
+           - name: "deploymentId"
+             value: "1234"
+       - name: "anotherrule"
+         filterType: CorrelationFilter
+         correlationFilter:
+           - name: "testFilter"
+             value: "testValue"
    - name: charttopic2
+     subscriptionNeeded: yes
 
 global:
   tags:

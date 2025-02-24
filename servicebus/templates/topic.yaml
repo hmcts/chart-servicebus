@@ -1,29 +1,21 @@
 {{- $base := . -}}
-{{- $namespace := .Values.sbNamespace -}}
-{{- if .Values.setup.topics -}}
+  {{- $namespace := .Values.sbNamespace -}}
+  {{- if .Values.setup.topics -}}
   {{- range $topics := .Values.setup.topics }}
+  {{- $computedTopicName := coalesce $topics.fullName (printf "%s-%s" (include "hmcts.releasename.v2" $base) $topics.name) }}
+  {{- if not (hasKey $topics "create") | or $topics.create }}
 ---
 apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopic
 metadata:
-  name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
+  name: {{ $computedTopicName }}
+  {{- include "hmcts.labels.v2" $base | indent 2 }}
 spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
-  azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  {{- if $topics.subscriptionNeeded }}
----
-apiVersion: servicebus.azure.com/v1api20211101
-kind: NamespacesTopicsSubscription
-metadata:
-  name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  {{- ( include "hmcts.labels.v2" $base ) | indent 2 }}
-spec:
-  owner:
-    name: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  azureName: {{ template "hmcts.releasename.v2" $base }}-{{ $topics.name }}
-  requiresSession: {{ $topics.requiresSession | default false }}
+  azureName: {{ $computedTopicName }}
     {{- end }}
+
+    {{- include "hmcts.topicSubscription" (dict "base" $base "topics" $topics "computedTopicName" $computedTopicName) | nindent 0 }}
   {{- end }}
-{{- end }}
+  {{- end }}
