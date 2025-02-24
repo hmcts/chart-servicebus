@@ -15,8 +15,6 @@ setup:
   topics:
    - name: charttopic1
      subscriptionNeeded: yes
-     fullName: hmc-servicebus-aat
-     create: false
      rules:
        - name: "testRule"
          filterType: CorrelationFilter
