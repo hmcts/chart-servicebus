@@ -9,6 +9,10 @@ apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopicsSubscription
 metadata:
   name: {{ include "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+ {{- if $topics.ignoreSubscriptionDeletion }}
+  annotations:
+    "serviceoperator.azure.com/reconcile-policy": "detach-on-delete"
+ {{- end }}
   {{- include "hmcts.labels.v2" $base | indent 2 }}
 spec:
   owner:
