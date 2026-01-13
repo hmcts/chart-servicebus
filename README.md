@@ -51,9 +51,12 @@ The following table lists the configurable parameters of the Java chart and thei
 | `setup.topics.subscriptionNeeded`            | `string` | Specifies whether to create a subscription in the topic. Valid values are ["yes", "no"]. If set to "yes", a subscription having random name will be created in the topic; otherwise, it leaves everything unchanged. You may set this field to "yes" for message consumer, and set this field to "no" for message producer.                 | "no"                                      |
 | `setup.topics.ignoreSubscriptionDeletion`    | `string` | Specifies whether to delete a subscription in azure when deleting helm resource. Useful when creating against resources with resource locks                                                                                                                                                                                                 | "false"                                   |
 | `setup.topics.rules.name`                    | `string` | Name suffix for the subscription rule.                                                                                                                                                                                                                                                                                                      | **Required**                              |
-| `setup.topics.rules.filterType`              | `string` | Currently only supports correlation filters with value `CorrelationFilter`                                                                                                                                                                                                                                                                  | **Required**                              |
-| `setup.topics.rules.CorrelationFilter.name`  | `string` | Name of the correlation filter custom property.                                                                                                                                                                                                                                                                                             | **Required**                              |
-| `setup.topics.rules.CorrelationFilter.value` | `string` | Value for the correlation property to filter messages based on.                                                                                                                                                                                                                                                                             | **Required**                              |
+| `setup.topics.rules.filterType`              | `string` | Filter type for the subscription rule. Supports `CorrelationFilter` and `SqlFilter`                                                                                                                                                                                                                                                        | **Required**                              |
+| `setup.topics.rules.correlationFilter.name`  | `string` | Name of the correlation filter custom property. Required when `filterType` is `CorrelationFilter`                                                                                                                                                                                                                                           | **Required for CorrelationFilter**       |
+| `setup.topics.rules.correlationFilter.value` | `string` | Value for the correlation property to filter messages based on. Required when `filterType` is `CorrelationFilter`                                                                                                                                                                                                                          | **Required for CorrelationFilter**       |
+| `setup.topics.rules.sqlFilter.sqlExpression` | `string` | SQL expression for filtering messages. Required when `filterType` is `SqlFilter`. Example: `"MyProperty='ABC' AND MyOtherProperty IN ('val1', 'val2')"`                                                                                                                                                                                   | **Required for SqlFilter**               |
+| `setup.topics.rules.sqlFilter.compatibilityLevel` | `int` | Compatibility level for SQL filter, currently hard-coded to 20. Optional when `filterType` is `SqlFilter`                                                                                                                                                                                                                             | `20`                                      |
+| `setup.topics.rules.sqlFilter.requiresPreprocessing` | `bool` | Whether the SQL filter requires preprocessing. Optional when `filterType` is `SqlFilter`                                                                                                                                                                                                                                               | `false`                                   |
 | `tags.teamName`                              | string | team name used to create related Azure tag. This will usually be set by Jenkins through `global.`                                                                                                                                                                                                                                           | **Required if not set through `global.`** |
 | `tags.applicationName`                       | string | application name used to create necessary Azure tag. This will usually be set by Jenkins through `global.`                                                                                                                                                                                                                                  | **Required if not set through `global.`** |
 | `tags.builtFrom`                             | string | built from used to create necessary Azure tag. This will usually be set by Jenkins through `global.`                                                                                                                                                                                                                                        | **Required if not set through `global.`** |
@@ -62,7 +65,7 @@ The following table lists the configurable parameters of the Java chart and thei
 
 ## Setup Objects
 We support both `queue` and `topic` setup with optional `subscription` if needed.
- The queue object definition is:
+The queue object definition is:
 ```yaml
 setup:
   queues:
@@ -75,6 +78,22 @@ setup:
     maxQueueSize:  1024 	
     messageTimeToLive: "PT336H" 
     subscriptionNeeded: "yes"
+    rules:
+      # Correlation Filter example
+      - name: "correlationRule"
+        filterType: CorrelationFilter
+        correlationFilter:
+          - name: "hmctsServiceId"
+            value: "SERVICE_A"
+          - name: "environment"
+            value: "production"
+      # SQL Filter example
+      - name: "sqlRule"
+        filterType: SqlFilter
+        sqlFilter:
+          sqlExpression: "hmctsServiceId = 'SERVICE_B' AND priority > 5"
+          compatibilityLevel: 20
+          requiresPreprocessing: false
 
 ```
 ## Migration to v1.0 (from OSBA to ASO)
