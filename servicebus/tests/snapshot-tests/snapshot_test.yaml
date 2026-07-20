@@ -1,0 +1,13 @@
+suite: chart-servicebus snapshot
+# Snapshot is generated from the values loaded by the pipeline:
+#   --values ci-values.yaml --values ci-values-minimal.yaml
+# ci-values.yaml exercises queues, topics with subscriptions and CorrelationFilter rules.
+# Run `helm unittest --update-snapshot servicebus/` to regenerate after intentional changes.
+templates:
+  - templates/namespace.yaml
+  - templates/queue.yaml
+  - templates/topic.yaml
+tests:
+  - it: matches snapshot for queues and topics with full ci-values
+    asserts:
+      - matchSnapshot: {}

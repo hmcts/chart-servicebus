@@ -1,0 +1,12 @@
+# Fed into: kubeconform, helm-unittest assertion tests + snapshots
+sbNamespace: test-servicebus # required by queue and topic owner refs
+resourceGroup: test-rg # required by namespace owner ref
+setup:
+  queues:
+    - name: test-queue # exercises the queue rendering code path
+global:
+  tags: # required fields — namespace.yaml uses required() on all of these
+    applicationName: test-app
+    builtFrom: https://github.com/hmcts/chart-servicebus
+    businessArea: CFT
+    environment: development

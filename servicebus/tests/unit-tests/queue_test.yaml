@@ -1,0 +1,34 @@
+suite: Queue rendering
+templates:
+  - templates/queue.yaml
+tests:
+  - it: renders a NamespacesQueue for each queue in setup.queues
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        queues:
+          - name: queue-one
+          - name: queue-two
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: renders no documents when setup.queues is empty
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        queues: {}
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: queue azureName includes release name and queue name
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        queues:
+          - name: my-queue
+    asserts:
+      - matchRegex:
+          path: spec.azureName
+          pattern: my-queue$
