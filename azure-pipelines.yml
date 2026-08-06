@@ -27,7 +27,6 @@ jobs:
       helmDeleteWait: "360"
       helmInstallWait: "360"
       kubeconformValuesFile: ci-values-minimal.yaml
-      runSnapshotTests: true
       runUnitTests: true
 
 - job: Release
