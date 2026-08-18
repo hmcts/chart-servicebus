@@ -9,7 +9,7 @@ We will take small PRs and small features to this chart but more complicated nee
 ## Prerequisites
 
 - To use this chart, you need a Resource Group and Service Bus namespace created. 
-- Refer to [cnp-flux-config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v2.md#service-bus-namespace) for setting up resource group, servicebus namespace and Kubernetes secret with connection string.
+- Refer to [cnp-flux-config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v3.md#service-bus-namespace) for setting up resource group, servicebus namespace and Kubernetes secret with connection string.
 
 ## Example configuration
 
@@ -24,7 +24,7 @@ setup:
 ```
 ## Using it in your helm chart.
 
-- Refer to [cnp-flux-config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v2.md#service-bus-namespace) on how to setup Kubernetes secret with connection string and how to use it with your app.
+- Refer to [cnp-flux-config docs](https://github.com/hmcts/cnp-flux-config/blob/master/docs/aso-setup-v3.md#service-bus-namespace) on how to setup Kubernetes secret with connection string and how to use it with your app.
 - Actual queue and topic names that are created in azure for above configuration will be with names `{{ .Release.Name}}-servicebus-yourQueue`,`{{ .Release.Name-}}-servicebus-myTopic`.
 
 ## Configuration

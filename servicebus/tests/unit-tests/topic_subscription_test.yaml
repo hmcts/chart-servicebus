@@ -1,0 +1,124 @@
+suite: Topic subscription rendering
+templates:
+  - templates/topic.yaml
+tests:
+  - it: subscription requiresSession defaults to false when not specified
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscription
+    asserts:
+      - equal:
+          path: spec.requiresSession
+          value: false
+
+  - it: subscription requiresSession is true when specified
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            requiresSession: true
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscription
+    asserts:
+      - equal:
+          path: spec.requiresSession
+          value: true
+
+  - it: renders a rule document for each rule defined on a subscription
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            rules:
+              - name: rule-one
+                filterType: TrueFilter
+              - name: rule-two
+                filterType: TrueFilter
+    asserts:
+      # topic + subscription + 2 rules
+      - hasDocuments:
+          count: 4
+
+  - it: rule name includes release name and rule name
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            rules:
+              - name: my-rule
+                filterType: TrueFilter
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscriptionsRule
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: -my-rule$
+
+  - it: rule owner references the parent subscription
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            rules:
+              - name: my-rule
+                filterType: TrueFilter
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscriptionsRule
+    asserts:
+      - matchRegex:
+          path: spec.owner.name
+          pattern: -my-topic$
+
+  - it: rule has detach-on-delete annotation when ignoreSubscriptionDeletion is true
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            ignoreSubscriptionDeletion: true
+            rules:
+              - name: my-rule
+                filterType: TrueFilter
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscriptionsRule
+    asserts:
+      - equal:
+          path: metadata.annotations["serviceoperator.azure.com/reconcile-policy"]
+          value: detach-on-delete
+
+  - it: rule has no annotation when ignoreSubscriptionDeletion is false
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            ignoreSubscriptionDeletion: false
+            rules:
+              - name: my-rule
+                filterType: TrueFilter
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscriptionsRule
+    asserts:
+      - notExists:
+          path: metadata.annotations

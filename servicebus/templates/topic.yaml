@@ -2,14 +2,14 @@
   {{- $namespace := .Values.sbNamespace -}}
   {{- if .Values.setup.topics -}}
   {{- range $topics := .Values.setup.topics }}
-  {{- $computedTopicName := coalesce $topics.fullName (printf "%s-%s" (include "hmcts.releasename.v2" $base) $topics.name) }}
+  {{- $computedTopicName := coalesce $topics.fullName (printf "%s-%s" (include "hmcts.releasename.v3" $base) $topics.name) }}
   {{- if not (hasKey $topics "create") | or $topics.create }}
 ---
 apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopic
 metadata:
   name: {{ $computedTopicName }}
-  {{- include "hmcts.labels.v2" $base | indent 2 }}
+  {{- include "hmcts.labels.v3" $base | indent 2 }}
 spec:
   owner:
     name: {{ required "A Service Bus Namespace ( $namespace ) is required" $namespace }}
