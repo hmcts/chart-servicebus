@@ -1,4 +1,4 @@
-apiVersion: v3
+apiVersion: v2
 description: A Helm chart for HMCTS azure service bus integration
 name: servicebus
 # This is the chart version. This doesn't need to be incremented on every change.
