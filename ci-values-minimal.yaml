@@ -4,6 +4,7 @@ resourceGroup: test-rg # required by namespace owner ref
 setup:
   queues:
     - name: test-queue # exercises the queue rendering code path
+  topics: [] # TEMP: blanks out ci-values.yaml's topics/rules to confirm the NamespacesTopicsSubscriptionsRule kubeconform/datreeio theory
 global:
   tags: # required fields — namespace.yaml uses required() on all of these
     applicationName: test-app
