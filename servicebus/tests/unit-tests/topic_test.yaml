@@ -47,8 +47,9 @@ tests:
           - name: my-topic
             subscriptionNeeded: false
     asserts:
-      - notContainsDocument:
+      - containsDocument:
           kind: NamespacesTopicsSubscription
+        not: true
 
   - it: subscription has detach-on-delete annotation when ignoreSubscriptionDeletion is true
     set:
