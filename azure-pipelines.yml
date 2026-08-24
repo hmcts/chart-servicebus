@@ -12,16 +12,8 @@ resources:
   - repository: cnp-azuredevops-libraries
     type: github
     name: hmcts/cnp-azuredevops-libraries
-    ref: refs/heads/DTSPO-33907 # TODO: switch back to default branch once kubeconformCrdSchemaLocation is merged
+    ref: refs/heads/DTSPO-33907 # TODO: switch back to default branch once ASO CRD schema generation is merged
     endpoint: 'hmcts'
-
-variables:
-# ASO release used to (re)generate CRD schemas locally, bypassing known bugs in the datreeio catalog
-# (e.g. NamespacesTopicsSubscriptionsRule's malformed correlationFilter schema). Bump when ASO releases.
-- name: asoVersion
-  value: v2.20.0
-- name: yqVersion
-  value: v4.53.6
 
 # Data-driven validate jobs (pattern matches hmcts/chart-function's azure-pipelines.yaml).
 # Add an entry here to spin up another validate job without duplicating the steps block.
@@ -42,38 +34,6 @@ jobs:
 - ${{ each validateJob in parameters.validationJobs }}:
   - job: ${{ validateJob.jobName }}
     steps:
-    - script: |
-        set -euo pipefail
-
-        SCHEMA_ROOT="$(Agent.TempDirectory)/aso-schemas"
-        GROUP_DIR="$SCHEMA_ROOT/servicebus.azure.com"
-        mkdir -p "$GROUP_DIR"
-
-        # mikefarah/yq - used to pull just this chart's CRD group out of the full ASO release bundle
-        curl -sfL "https://github.com/mikefarah/yq/releases/download/$(yqVersion)/yq_linux_amd64" -o "$(Agent.TempDirectory)/yq"
-        chmod +x "$(Agent.TempDirectory)/yq"
-        sudo mv "$(Agent.TempDirectory)/yq" /usr/local/bin/yq
-
-        sudo apt-get update -qq && sudo apt-get install -y -qq python3-yaml
-        curl -sfL https://raw.githubusercontent.com/yannh/kubeconform/master/scripts/openapi2jsonschema.py -o "$(Agent.TempDirectory)/openapi2jsonschema.py"
-
-        # ASO's release bundle is a plain multi-document YAML stream of standalone
-        # CustomResourceDefinition objects (NOT a `kind: List` with an `items:` array),
-        # so the filter operates directly on each document rather than via `.items[]`.
-        curl -sfL "https://github.com/Azure/azure-service-operator/releases/download/$(asoVersion)/azureserviceoperator_customresourcedefinitions_$(asoVersion).yaml" \
-          | yq 'select(.spec.group == "servicebus.azure.com")' \
-          > "$(Agent.TempDirectory)/servicebus-crds.yaml"
-
-        cd "$GROUP_DIR"
-        python3 "$(Agent.TempDirectory)/openapi2jsonschema.py" "$(Agent.TempDirectory)/servicebus-crds.yaml"
-
-        echo "Generated schema files:"
-        find "$SCHEMA_ROOT" -type f | sort
-
-        # Same {{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json layout as the datreeio catalog, just local
-        echo "##vso[task.setvariable variable=kubeconformCrdSchemaLocation]$SCHEMA_ROOT/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
-      displayName: "Generate servicebus CRD schemas from ASO release (bypasses datreeio catalog bugs)"
-
     - template: steps/charts/validate.yaml@cnp-azuredevops-libraries
       parameters:
         chartName: servicebus
@@ -83,7 +43,8 @@ jobs:
         helmInstallWait: "360"
         valuesFile: ${{ validateJob.valuesFile }}
         kubeconformValuesFile: ${{ validateJob.kubeconformValuesFile }}
-        kubeconformCrdSchemaLocation: $(kubeconformCrdSchemaLocation)
+        # Matches the ASO version our platform is currently pinned to (also validate.yaml's own default).
+        asoVersion: v2.17.0
         runUnitTests: ${{ validateJob.runUnitTests }}
 
 - job: Release
