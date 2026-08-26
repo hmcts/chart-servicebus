@@ -8,16 +8,16 @@
 apiVersion: servicebus.azure.com/v1api20211101
 kind: NamespacesTopicsSubscription
 metadata:
-  name: {{ include "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+  name: {{ include "hmcts.releasename.v3" $base }}-{{ $topics.name }}
  {{- if $topics.ignoreSubscriptionDeletion }}
   annotations:
     "serviceoperator.azure.com/reconcile-policy": "detach-on-delete"
  {{- end }}
-  {{- include "hmcts.labels.v2" $base | indent 2 }}
+  {{- include "hmcts.labels.v3" $base | indent 2 }}
 spec:
   owner:
     name: {{ $computedTopicName }}
-  azureName: {{ include "hmcts.releasename.v2" $base }}-{{ $topics.name }}
+  azureName: {{ include "hmcts.releasename.v3" $base }}-{{ $topics.name }}
   requiresSession: {{ $topics.requiresSession | default false }}
 {{- if $topics.rules }}
   {{- range $rule := $topics.rules }}

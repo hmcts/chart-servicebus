@@ -14,20 +14,35 @@ resources:
     name: hmcts/cnp-azuredevops-libraries
     endpoint: 'hmcts'
 
-jobs:
-- job: Validate
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - template: steps/charts/validate.yaml@cnp-azuredevops-libraries
-    parameters :
-      chartName: servicebus
+parameters:
+- name: validationJobs
+  type: object
+  default:
+    - jobName: Validate
       chartReleaseName: chart-servicebus-ci
-      chartNamespace: chart-tests
-      helmDeleteWait: "360"
-      helmInstallWait: "360"
+      valuesFile: ci-values.yaml
       kubeconformValuesFile: ci-values-minimal.yaml
       runUnitTests: true
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- ${{ each validateJob in parameters.validationJobs }}:
+  - job: ${{ validateJob.jobName }}
+    steps:
+    - template: steps/charts/validate.yaml@cnp-azuredevops-libraries
+      parameters:
+        chartName: servicebus
+        chartReleaseName: ${{ validateJob.chartReleaseName }}
+        chartNamespace: chart-tests
+        helmDeleteWait: "120"
+        helmInstallWait: "120"
+        valuesFile: ${{ validateJob.valuesFile }}
+        kubeconformValuesFile: ${{ validateJob.kubeconformValuesFile }}
+        generateAsoSchemas: true
+        asoVersion: v2.17.0
+        runUnitTests: ${{ validateJob.runUnitTests }}
 
 - job: Release
   # Make sure we have a tag to run this job
@@ -36,9 +51,8 @@ jobs:
         succeeded(),
         startsWith(variables['Build.SourceBranch'], 'refs/tags/')
       )
-  dependsOn: Validate
-  pool:
-    vmImage: 'ubuntu-latest'
+  dependsOn:
+  - Validate
   steps:
   - template: steps/charts/release.yaml@cnp-azuredevops-libraries
     parameters:

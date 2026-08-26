@@ -1,0 +1,105 @@
+suite: Namespace required tags
+templates:
+  - templates/namespace.yaml
+tests:
+  - it: fails when tags.applicationName is missing
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        builtFrom: https://github.com/hmcts/chart-servicebus
+        businessArea: CFT
+        environment: development
+      # clears the ci-values.yaml global.tags fallback so the missing tag actually triggers required()
+      global:
+        tags:
+          applicationName: ""
+    asserts:
+      - failedTemplate:
+          errorPattern: An application tag name
+
+  - it: fails when tags.builtFrom is missing
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        applicationName: test-app
+        businessArea: CFT
+        environment: development
+      # clears the ci-values.yaml global.tags fallback so the missing tag actually triggers required()
+      global:
+        tags:
+          builtFrom: ""
+    asserts:
+      - failedTemplate:
+          errorPattern: Repo built from
+
+  - it: fails when tags.businessArea is missing
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        applicationName: test-app
+        builtFrom: https://github.com/hmcts/chart-servicebus
+        environment: development
+      # clears the ci-values.yaml global.tags fallback so the missing tag actually triggers required()
+      global:
+        tags:
+          businessArea: ""
+    asserts:
+      - failedTemplate:
+          errorPattern: Business Area name
+
+  - it: fails when tags.environment is missing
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        applicationName: test-app
+        builtFrom: https://github.com/hmcts/chart-servicebus
+        businessArea: CFT
+      # clears the ci-values.yaml global.tags fallback so the missing tag actually triggers required()
+      global:
+        tags:
+          environment: ""
+    asserts:
+      - failedTemplate:
+          errorPattern: Environment name
+
+  - it: renders provided tag values in spec.tags
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        applicationName: test-app
+        builtFrom: https://github.com/hmcts/chart-servicebus
+        businessArea: CFT
+        environment: development
+    asserts:
+      - equal:
+          path: spec.tags.application
+          value: test-app
+      - equal:
+          path: spec.tags.builtFrom
+          value: https://github.com/hmcts/chart-servicebus
+      - equal:
+          path: spec.tags.businessArea
+          value: CFT
+      - equal:
+          path: spec.tags.environment
+          value: development

@@ -38,6 +38,8 @@ tests:
     asserts:
       - containsDocument:
           kind: NamespacesTopicsSubscription
+          apiVersion: servicebus.azure.com/v1api20211101
+          any: true
 
   - it: omits topic subscription when subscriptionNeeded is false
     set:
@@ -47,8 +49,11 @@ tests:
           - name: my-topic
             subscriptionNeeded: false
     asserts:
-      - notContainsDocument:
+      - containsDocument:
           kind: NamespacesTopicsSubscription
+          apiVersion: servicebus.azure.com/v1api20211101
+          any: true
+        not: true
 
   - it: subscription has detach-on-delete annotation when ignoreSubscriptionDeletion is true
     set:
