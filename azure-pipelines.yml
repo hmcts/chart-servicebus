@@ -43,6 +43,7 @@ jobs:
         helmInstallWait: "120"
         valuesFile: ${{ validateJob.valuesFile }}
         kubeconformValuesFile: ${{ validateJob.kubeconformValuesFile }}
+        generateAsoSchemas: true
         # Matches the ASO version our platform is currently pinned to (also validate.yaml's own default).
         asoVersion: v2.17.0
         runUnitTests: ${{ validateJob.runUnitTests }}
