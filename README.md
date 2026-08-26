@@ -124,6 +124,10 @@ Builds are run against the 'nonprod' AKS cluster.
 
 A build is triggered when pull requests are created. This build will run `helm lint`, deploy the chart using `ci-values.yaml` and run `helm test`.
 
+Validate jobs are defined via the `validationJobs` parameter in `azure-pipelines.yml` (pattern matches `hmcts/chart-function`'s pipeline) — add an entry there to spin up another validate job without duplicating the underlying steps.
+
+The `asoVersion` passed to the shared `validate.yaml` template is kept in sync with the ASO version this platform is actually pinned to, which may differ from the shared template's own default.
+
 ### Release Build
 
 Triggered when the repository is tagged (e.g. when a release is created). Also performs linting and testing, and will publish the chart to ACR on success.

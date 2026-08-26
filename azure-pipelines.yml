@@ -15,8 +15,6 @@ resources:
     ref: refs/heads/DTSPO-33907 # TODO: switch back to default branch once ASO CRD schema generation is merged
     endpoint: 'hmcts'
 
-# Data-driven validate jobs (pattern matches hmcts/chart-function's azure-pipelines.yaml).
-# Add an entry here to spin up another validate job without duplicating the steps block.
 parameters:
 - name: validationJobs
   type: object
@@ -44,7 +42,6 @@ jobs:
         valuesFile: ${{ validateJob.valuesFile }}
         kubeconformValuesFile: ${{ validateJob.kubeconformValuesFile }}
         generateAsoSchemas: true
-        # Matches the ASO version our platform is currently pinned to (also validate.yaml's own default).
         asoVersion: v2.17.0
         runUnitTests: ${{ validateJob.runUnitTests }}
 
