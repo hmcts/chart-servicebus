@@ -12,7 +12,6 @@ resources:
   - repository: cnp-azuredevops-libraries
     type: github
     name: hmcts/cnp-azuredevops-libraries
-    ref: refs/heads/DTSPO-33907 # TODO: switch back to default branch once ASO CRD schema generation is merged
     endpoint: 'hmcts'
 
 parameters:
