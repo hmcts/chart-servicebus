@@ -39,8 +39,8 @@ jobs:
         chartName: servicebus
         chartReleaseName: ${{ validateJob.chartReleaseName }}
         chartNamespace: chart-tests
-        helmDeleteWait: "360"
-        helmInstallWait: "360"
+        helmDeleteWait: "120"
+        helmInstallWait: "120"
         valuesFile: ${{ validateJob.valuesFile }}
         kubeconformValuesFile: ${{ validateJob.kubeconformValuesFile }}
         # Matches the ASO version our platform is currently pinned to (also validate.yaml's own default).
