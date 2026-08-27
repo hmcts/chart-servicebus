@@ -1,0 +1,33 @@
+suite: Namespace conditional rendering
+templates:
+  - templates/namespace.yaml
+tests:
+  - it: renders when deploySbNamespace is true
+    set:
+      deploySbNamespace: true
+      sbNamespace: test-servicebus
+      location: uksouth
+      serviceplan: standard
+      resourceGroup: test-rg
+      tags:
+        applicationName: test-app
+        builtFrom: https://github.com/hmcts/chart-servicebus
+        businessArea: CFT
+        environment: development
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Namespace
+
+  - it: is absent when deploySbNamespace is false
+    set:
+      deploySbNamespace: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: is absent when deploySbNamespace is not set
+    asserts:
+      - hasDocuments:
+          count: 0

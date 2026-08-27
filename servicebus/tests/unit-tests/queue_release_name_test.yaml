@@ -1,0 +1,16 @@
+suite: Queue releaseNameOverride rendering
+templates:
+  - templates/queue.yaml
+tests:
+  - it: queue azureName reflects releaseNameOverride when provided
+    # per README, releaseNameOverride fully replaces the default Release.Name-Chart.Name base
+    set:
+      releaseNameOverride: custom-release-name
+      sbNamespace: test-servicebus
+      setup:
+        queues:
+          - name: my-queue
+    asserts:
+      - matchRegex:
+          path: spec.azureName
+          pattern: ^custom-release-name-my-queue$

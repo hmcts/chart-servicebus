@@ -5,10 +5,10 @@ apiVersion: servicebus.azure.com/v1api20211101
 kind: Namespace
 metadata:
   name: {{ .Values.sbNamespace }}
-  {{- ( include "hmcts.labels.v2" . ) | indent 2 }}
+  {{- ( include "hmcts.labels.v3" . ) | indent 2 }}
 spec:
   tags:
-    app.kubernetes.io_name: {{ template "hmcts.releasename.v2" . }}
+    app.kubernetes.io_name: {{ template "hmcts.releasename.v3" . }}
     helm.sh_chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     application: {{ required "An application tag name (.Values.tags.applicationName) is required"  (.Values.tags.applicationName | default $tags.applicationName) }}
     builtFrom: {{ required "Repo built from (.Values.tags.builtFrom) is required" (.Values.tags.builtFrom | default $tags.builtFrom) }}

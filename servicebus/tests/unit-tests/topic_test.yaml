@@ -1,0 +1,122 @@
+suite: Topic conditional rendering
+templates:
+  - templates/topic.yaml
+tests:
+  - it: renders a NamespacesTopic for each topic in setup.topics
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: topic-one
+          - name: topic-two
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: skips topic when create is false
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: topic-visible
+            create: true
+          - name: topic-hidden
+            create: false
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: NamespacesTopic
+
+  - it: renders topic subscription when subscriptionNeeded is true
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+    asserts:
+      - containsDocument:
+          kind: NamespacesTopicsSubscription
+          apiVersion: servicebus.azure.com/v1api20211101
+          any: true
+
+  - it: omits topic subscription when subscriptionNeeded is false
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: false
+    asserts:
+      - containsDocument:
+          kind: NamespacesTopicsSubscription
+          apiVersion: servicebus.azure.com/v1api20211101
+          any: true
+        not: true
+
+  - it: subscription has detach-on-delete annotation when ignoreSubscriptionDeletion is true
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            ignoreSubscriptionDeletion: true
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscription
+    asserts:
+      - equal:
+          path: metadata.annotations["serviceoperator.azure.com/reconcile-policy"]
+          value: detach-on-delete
+
+  - it: subscription has no annotation when ignoreSubscriptionDeletion is false
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            ignoreSubscriptionDeletion: false
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscription
+    asserts:
+      - notExists:
+          path: metadata.annotations
+
+  - it: renders CorrelationFilter rule when filterType is CorrelationFilter
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            subscriptionNeeded: true
+            rules:
+              - name: my-rule
+                filterType: CorrelationFilter
+                correlationFilter:
+                  - name: hmctsServiceId
+                    value: TEST
+    documentSelector:
+      path: kind
+      value: NamespacesTopicsSubscriptionsRule
+    asserts:
+      - exists:
+          path: spec.correlationFilter
+
+  - it: uses fullName for topic when provided
+    set:
+      sbNamespace: test-servicebus
+      setup:
+        topics:
+          - name: my-topic
+            fullName: my-custom-full-topic-name
+    documentSelector:
+      path: kind
+      value: NamespacesTopic
+    asserts:
+      - equal:
+          path: spec.azureName
+          value: my-custom-full-topic-name
