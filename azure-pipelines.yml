@@ -24,8 +24,6 @@ parameters:
       valuesFile: ci-values.yaml
       kubeconformValuesFile: ci-values-minimal.yaml
       runUnitTests: true
-      helmUnittestValuesFiles:
-        - "ci-values.yaml"
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -46,7 +44,6 @@ jobs:
         generateAsoSchemas: true
         asoVersion: v2.17.0
         runUnitTests: ${{ validateJob.runUnitTests }}
-        helmUnittestValuesFiles: ${{ validateJob.helmUnittestValuesFiles }}
 
 - job: Release
   # Make sure we have a tag to run this job
