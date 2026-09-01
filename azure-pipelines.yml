@@ -12,7 +12,7 @@ resources:
   - repository: cnp-azuredevops-libraries
     type: github
     name: hmcts/cnp-azuredevops-libraries
-    ref: refs/heads/dtspo-34311-upgrade-helm-validation-pl-v4
+    ref: refs/heads/master
     endpoint: 'hmcts'
 
 parameters:
