@@ -28,6 +28,10 @@ setup:
          correlationFilter:
            - name: "testFilter"
              value: "testValue"
+       - name: "sqltestrule"
+         filterType: SqlFilter
+         sqlFilter:
+           sqlExpression: "hmctsServiceId = 'BBBB' AND deploymentId IN ('5678', '9012')"
    - name: charttopic2
      subscriptionNeeded: yes
 

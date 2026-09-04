@@ -22,4 +22,16 @@ spec:
       "{{ $filter.name }}": "{{ $filter.value }}"
       {{- end }}
   {{- end }}
+  {{- if eq $rule.filterType "SqlFilter" }}
+  sqlFilter:
+    {{- if hasKey $rule.sqlFilter "compatibilityLevel" }}
+    compatibilityLevel: {{ $rule.sqlFilter.compatibilityLevel }}
+    {{- end }}
+    {{- if hasKey $rule.sqlFilter "requiresPreprocessing" }}
+    requiresPreprocessing: {{ $rule.sqlFilter.requiresPreprocessing }}
+    {{- end }}
+    {{- if $rule.sqlFilter.sqlExpression }}
+    sqlExpression: {{ $rule.sqlFilter.sqlExpression | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}
